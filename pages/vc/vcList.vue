@@ -16,7 +16,7 @@
             </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
               <v-text-field
-                  v-model="model.noKeyword"
+                  v-model="model.vctn"
                   variant="underlined"
                   class="text-box"
                   clearable
@@ -139,10 +139,10 @@
               <td></td>
               <td> {{ model.totalList - index - ((model.indexPage - 1) * model.indexPerPage) }}</td>
               <td> {{ item.columns.empNm }}</td>
-              <td> {{ item.columns.vctnDayCnt }}</td>
-              <td> {{ item.columns.vctnRsn }}</td>
-              <td> {{ item.columns.vctnRsdCnt }}</td>
-              <td> {{ item.columns.vctnStNm }}</td>
+              <td> {{ item.columns.vctnKndNm }}</td>
+              <td> {{ item.columns.vctnStrDt }}</td>
+              <td> {{ item.columns.vctnEndDt }}</td>
+              <td> {{ item.columns.vctnAplDtm }}</td>
               <td>
                 <v-chip :color="getColor(item.columns.vctnStNm)">
                   {{ item.columns.vctnStNm }}
@@ -166,6 +166,7 @@ import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {ref, watch} from "vue";
 import {useRouter} from "nuxt/app";
+import axios from "axios";
 
 const router = useRouter()
 const store = useVctnStore()
@@ -189,9 +190,10 @@ let model = ref({
   },
     {title: 'No', key: 'vctnNo'},
     {title: '사원이름', key: 'empNm'},
-    {title: '휴가 시작일', key: 'vctnDayCnt'},
-    {title: '휴가 마지막일', key: 'vctnRsn'},
-    {title: '휴가 신청일', key: 'vctnRsdCnt'},
+    {title: '휴가 종류', key: 'vctnKndNm'},
+    {title: '휴가 시작일', key: 'vctnStrDt'},
+    {title: '휴가 마지막일', key: 'vctnEndDt'},
+    {title: '휴가 신청일', key: 'vctnAplDtm'},
     {title: '신청 상태', key: 'vctnStNm'},
   ],
   noKeyword: '',
@@ -252,7 +254,7 @@ function getVctnFromApi() {
       startDate = model.value.strDt
       stParam = model.value.stKeyword
     }
-
+//검색
     let searchParam = {
       noKeyword: model.value.noKeyword,
       nmKeyword: model.value.nmKeyword,
@@ -302,7 +304,7 @@ function getColor(vctnStNm) {
 
 function showVctn(id) {
   router.push({
-    path: "/vcDetail",
+    path: "/vc/vcDetail",
     query: {vctnNo: id}
   })
 }
@@ -355,8 +357,8 @@ function formattedDate(date) {
 
 .date-box {
   width: 25%;
-  margin-right:30px;
-  margin-top:20px;
+  margin-right: 30px;
+  margin-top: 20px;
 }
 
 .text-center {
