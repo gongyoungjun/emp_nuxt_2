@@ -1,62 +1,17 @@
 <template>
-  <div class="auth-wrapper d-flex align-center justify-center pa-4">
-    <VCard
-        class="auth-card pa-4 pt-7"
-        width="400"
-    >
-      <VCardText class="pt-2">
-        <h5 class="text-h5 font-weight-semibold mb-1">
-          로그인 페이지 입니다
-        </h5>
-      </VCardText>
-
-      <VCardText>
-        <VForm v-model="form"
-               @submit.prevent="onSubmit">
-          <VRow>
-            <!-- email -->
-            <VCol cols="12">
-              <VTextField
-                  v-model="model.empNm"
-                  :type="number"
-                  :rules="[requiredId]"
-              />
-            </VCol>
-
-            <!-- password -->
-            <VCol cols="12">
-              <VTextField
-                  v-model="model.empPwd"
-                  label="비밀번호"
-                  :rules="[requiredPw]"
-                  :type="isPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
-                  @click:append-inner="isPasswordVisible = !isPasswordVisible"
-              />
-
-              <!-- remember me checkbox -->
-              <div
-                  class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4"
-                  style="color: #af0020; margin-bottom: 13px; margin-top: -18px; font-size: 14px" >
-                {{ errorMessage }}
-              </div>
-
-              <VBtn
-                  block
-                  type="submit"
-                  :click="onSubmit"
-              >
-                Login
-              </VBtn>
-            </VCol>
-
-            <!-- create account -->
-
-          </VRow>
-        </VForm>
-      </VCardText>
-    </VCard>
-
+  <div class="login-container">
+    <h2>로그인</h2>
+    <form @submit.prevent="login">
+      <div class="form-group">
+        <label for="username">사용자 이름:</label>
+        <input type="text" id="username" v-model="username" />
+      </div>
+      <div class="form-group">
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" v-model="password" />
+      </div>
+      <button type="submit">로그인</button>
+    </form>
   </div>
 </template>
 
