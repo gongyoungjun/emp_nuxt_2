@@ -9,7 +9,7 @@
         <nuxt-link to="/vc/vcList">휴가 목록</nuxt-link>
       </nav>
       <nav>
-        <nuxt-link to="/vc/createVc">휴가 신청</nuxt-link>
+        <nuxt-link to="/vc/vcCreate">휴가 신청</nuxt-link>
       </nav>
     </ul>
   </div>

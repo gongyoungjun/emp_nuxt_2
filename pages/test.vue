@@ -16,7 +16,7 @@
             </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
               <v-text-field
-                  v-model="model.empNo"
+                  v-model="model.noKeyword"
                   variant="underlined"
                   class="text-box"
                   clearable
@@ -28,7 +28,7 @@
             </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
               <v-text-field
-                  v-model="model.empNm"
+                  v-model="model.nmKeyword"
                   variant="underlined"
                   class="text-box"
                   clearable
@@ -36,8 +36,46 @@
               ></v-text-field>
             </v-col>
           </v-row>
-
-
+          <v-row
+              justify="end"
+              style="margin-top: -30px"
+          >
+            <p class="text-center" style="margin-left: 151px;">
+              직급
+            </p>
+            <v-col>
+              <v-select
+                  v-model="model.rnkKeyword"
+                  :items="types"
+                  item-title="name"
+                  item-value="value"
+                  variant="underlined"
+                  class="select-box"
+                  hide-selected
+                  style="margin-left: 4px; margin-top: -8px;"
+              ></v-select>
+            </v-col>
+            <p class="text-center" style="margin-left: 12px">
+              입사일
+            </p>
+            <v-col
+                md="2"
+                style="margin-top: 8px; margin-right: 1px;"
+            >
+              <Datepicker
+                  v-model="model.startDt"
+                  :enable-time-picker="false"
+                  autoApply
+                  format="yyyy-MM-dd"
+                  week-start="0"
+              >
+                <template #calendar-header="{ index, day }">
+                  <div :class="index === 0 ? 'red-color' : index === 6 ? 'blue-color' : '' ">
+                    {{ day }}
+                  </div>
+                </template>
+              </Datepicker>
+            </v-col>
             <p class="text-center">
               -
             </p>
@@ -45,6 +83,17 @@
                 md="2"
                 style="margin-top: 8px; margin-right: 22px;"
             >
+              <Datepicker v-model="model.endDt"
+                          :enable-time-picker="false"
+                          autoApply
+                          format="yyyy-MM-dd"
+                          week-start="0">
+                <template #calendar-header="{ index, day }">
+                  <div :class="index === 0 ? 'red-color' : index === 6 ? 'blue-color' : '' ">
+                    {{ day }}
+                  </div>
+                </template>
+              </Datepicker>
             </v-col>
 
             <v-col
@@ -60,32 +109,27 @@
                 검색
               </v-btn>
             </v-col>
+          </v-row>
         </v-card-text>
       </v-form>
       <v-spacer></v-spacer>
       <div>
-        <v-data-table-server
-            :headers="model.headers"
-            :items="list"
-            :items-length="model.totalList"
-            :items-per-page="model.cntPerPage"
-            :loading="model.loading"
-            class="my-table-style"
-            @update:options="options = $event"
-        >
-          <template #item="{ item }">
-            <tr @click="showEmp(item.columns.empNo)" v-if="!model.loading">
-              <td></td>
-              <td> {{ item.columns.empNo }}</td>
-              <td> {{ item.columns.empNm }}</td>
-              <td> {{ item.columns.rnkNm }}</td>
-              <td> {{ item.columns.empEml }}</td>
-              <td> {{ item.columns.empBrtDt }}</td>
-              <td> {{ item.columns.empHrDt }}</td>
-            </tr>
-          </template>
+        <tr @click="showEmp(item.columns.empNo)" v-if="!model.loading">
+          <td></td>
+          <td> {{ model.totalList - index - ((model.indexPage - 1) * model.indexPerPage) }}</td>
+          <td> {{ item.columns.empNo }}</td>
+          <td> {{ item.columns.empNm }}</td>
+          <td> {{ item.columns.rnkNm }}</td>`
+          <td> {{ item.columns.empEml }}</td>
+          <td> {{ item.columns.empBrtDt }}</td>
+          <td> {{ item.columns.empHrDt }}</td>
+          <td>
+            <v-chip :color="getColor(item.columns.stNm)">
+              {{ item.columns.stNm }}
+            </v-chip>
+          </td>
+        </tr>
 
-        </v-data-table-server>
       </div>
     </v-container>
   </v-card>
@@ -100,12 +144,25 @@ definePageMeta({
 })
 
 import {VDataTableServer} from 'vuetify/labs/VDataTable';
+import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {ref, watch} from "vue";
-import { useRouter } from 'nuxt/app';
 
 const router = useRouter()
 const store = useEmpStore()
+
+
+
+const types = ref([
+  {name: '전체', value: ''},
+  {name: '사원', value: '01'},
+  {name: '대리', value: '02'},
+  {name: '과장', value: '03'},
+  {name: '차장', value: '04'},
+  {name: '부장', value: '05'},
+  {name: '이사', value: '06'},
+  {name: '대표', value: '07'},
+])
 
 let options = ref()
 let list = ref([])
@@ -118,6 +175,7 @@ let model = ref({
   headers: [{
     sortable: false,
   },
+    {title: 'No', key: 'index'},
     {title: '사원번호', key: 'empNo'},
     {title: '사원이름', key: 'empNm'},
     {title: '직급', key: 'rnkNm'},
@@ -126,8 +184,8 @@ let model = ref({
     {title: '입사일', key: 'empHrDt'},
     {title: '재직상태', key: 'stNm'},
   ],
-  empNo: '',
-  empNm: '',
+  noKeyword: '',
+  nmKeyword: '',
   rnkKeyword: '',
   start: 0,
   cntPerPage: 4,
@@ -153,13 +211,17 @@ function getEmpFromApi() {
       cntPerPage = pageData.itemsPerPage
     }
     let searchParam = {
-      empNo: model.value.empNo,
-      empNm: model.value.empNm,
+      noKeyword: model.value.noKeyword,
+      nmKeyword: model.value.nmKeyword,
+      rnkKeyword: model.value.rnkKeyword,
+      startDt: model.value.startDt,
+      endDt: model.value.endDt,
       page: pageData.page,
       cntPerPage: cntPerPage
     }
     //getAction
     const {data} = await store.empList(searchParam)
+    console.log("@@@@@@@@@@", data.value)
 
     if (data.value.list === null) {
       list = []
@@ -171,7 +233,10 @@ function getEmpFromApi() {
   })
 }
 
-
+function getColor(stNm) {
+  if (stNm === '퇴사') return 'red'
+  else return 'green'
+}
 
 function pagingSet() {
   return new Promise((resolve) => {
@@ -188,36 +253,16 @@ function pagingSet() {
     })
   })
 }
-/*
-function showEmp(empNo) {
-  router.push({ name: '/emp/empDetail', params: { empNo } });
-}
-*/
 
-function showEmp(empNo) {
-  router.push({
-    path: "/emp/empDetail",
-    query: {empNo: empNo}
-  })
-}
-
-
-/*let empDetailData = ref({});
-function showEmp(empNo) {
+function showEmp(empNo){
   console.log("@@@@@@@@ ", empNo)
-  store.empInfoUser(empNo) // 여기에서 호출
-      .then(data => {
-        empDetailData.value = data; // empDetailData에 할당
-      })
-      .catch(error => {
-        console.error(error)
-      });
-
   router.push({
     path: "/emp/empDetail",
     query: {empNo: empNo}
   })
-}*/
+}
+
+
 </script>
 
 <style scoped>
@@ -262,12 +307,5 @@ function showEmp(empNo) {
   margin-bottom: 12px;
 }
 
-.red-color {
-  color: red;
-}
-
-.blue-color {
-  color: blue;
-}
 
 </style>

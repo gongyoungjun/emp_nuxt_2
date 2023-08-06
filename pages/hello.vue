@@ -4,14 +4,14 @@
 
 
 <script setup>
-import {useLessonStore} from "~/store/lesson"
+import {useAuthStore} from "~/store/auth";
 
 const router = useRouter()
-const lessonStore = useLessonStore()
+const authStore = useAuthStore();
 let param = {
   thisMonth: "",
 }
-const {data} = await lessonStore.lessonMonth(param)
+const {data} = await authStore(param)
 console.log("data", data.value.data)
 
 function test(){

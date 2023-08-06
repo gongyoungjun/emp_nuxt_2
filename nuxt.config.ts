@@ -19,10 +19,8 @@ export default defineNuxtConfig({
         server: {
             proxy: {
                 '/api': {
-                    //target: 'http://mjgolf.myqnapcloud.com',
                     target: 'http://localhost:8080',
                     changeOrigin: true,
-                    // rewrite: (path) => path.replace(/^\/api/, ''),
                     ws: true
                 },
             },

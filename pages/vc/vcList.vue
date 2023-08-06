@@ -16,7 +16,7 @@
             </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
               <v-text-field
-                  v-model="model.vctn"
+                  v-model="model.vctnNo"
                   variant="underlined"
                   class="text-box"
                   clearable
@@ -28,7 +28,7 @@
             </p>
             <v-col cols="3" md="3" style="margin-left: -39px; margin-top: -6px">
               <v-text-field
-                  v-model="model.nmKeyword"
+                  v-model="model.empNm"
                   variant="underlined"
                   class="text-box"
                   clearable
@@ -36,65 +36,6 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <v-row
-              justify="end"
-              style="margin-top: -30px; margin-left: 19px"
-          >
-            <p class="text-center" style="margin-left: 88px;">
-              신청 상태
-            </p>
-            <v-col>
-              <v-select
-                  v-model="model.stKeyword"
-                  :items="state"
-                  item-title="name"
-                  item-value="value"
-                  variant="underlined"
-                  class="select-box"
-                  hide-selected
-                  style="margin-left: 3px; margin-top: -8px;"
-              ></v-select>
-            </v-col>
-            <v-row style="margin-top: 1px; margin-left: 50px">
-              <p class="text-center" style="margin-right: 10px">
-                신청일
-              </p>
-              <Datepicker v-model="model.aplDt"
-                          :enable-time-picker="false"
-                          class="date-box"
-                          autoApply
-                          format="yyyy-MM-dd"
-                          week-start="0">
-                <template #calendar-header="{ index, day }">
-                  <div :class="index === 0 ? 'red-color' : index === 6 ? 'blue-color' : '' ">
-                    {{ day }}
-                  </div>
-                </template>
-              </Datepicker>
-              <p class="text-center" style="margin-right: 10px; margin-left: -6px">
-                시작일
-              </p>
-              <Datepicker v-model="model.strDt"
-                          :enable-time-picker="false"
-                          class="date-box"
-                          autoApply
-                          format="yyyy-MM-dd"
-                          week-start="0">
-                <template #calendar-header="{ index, day }">
-                  <div :class="index === 0 ? 'red-color' : index === 6 ? 'blue-color' : '' ">
-                    {{ day }}
-                  </div>
-                </template>
-              </Datepicker>
-            </v-row>
-          </v-row>
-          <v-row
-              justify="end"
-              style="margin-top: -86px; margin-left: 10px"
-          >
-            <v-col
-                md="6"
-            >
               <v-btn
                   variant="text"
                   class="me-4"
@@ -103,8 +44,6 @@
               >
                 검색
               </v-btn>
-            </v-col>
-          </v-row>
         </v-card-text>
       </v-form>
       <v-spacer></v-spacer>
@@ -117,37 +56,19 @@
             :items-per-page="model.viewCount"
             :loading="model.loading"
             class="my-table-style"
-            @click:row="showVctn"
             @update:options="options = $event"
         >
-          <template #no-data>
-            <tr>
-              <td colspan="8" align="center">
-                결과가 없습니다 :(
-              </td>
-            </tr>
-          </template>
-          <template #loading>
-            <tr>
-              <td colspan="8" align="center">
-                로딩중...
-              </td>
-            </tr>
-          </template>
+
           <template #item="{ item, index }">
             <tr @click="showVctn(item.columns.vctnNo)" v-if="!model.loading">
               <td></td>
-              <td> {{ model.totalList - index - ((model.indexPage - 1) * model.indexPerPage) }}</td>
+              <td> {{ item.columns.vctnNo }}</td>
               <td> {{ item.columns.empNm }}</td>
               <td> {{ item.columns.vctnKndNm }}</td>
               <td> {{ item.columns.vctnStrDt }}</td>
               <td> {{ item.columns.vctnEndDt }}</td>
               <td> {{ item.columns.vctnAplDtm }}</td>
-              <td>
-                <v-chip :color="getColor(item.columns.vctnStNm)">
-                  {{ item.columns.vctnStNm }}
-                </v-chip>
-              </td>
+              <td> {{ item.columns.vctnStCd }}</td>
             </tr>
           </template>
         </v-data-table-server>
@@ -157,16 +78,11 @@
 </template>
 
 <script setup>
-definePageMeta({
-  layout: "admin"
-})
 
+import {useVctnStore} from "~/store/vctn";
 import {VDataTableServer} from 'vuetify/labs/VDataTable'
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
 import {ref, watch} from "vue";
 import {useRouter} from "nuxt/app";
-import axios from "axios";
 
 const router = useRouter()
 const store = useVctnStore()
@@ -182,7 +98,7 @@ let options = ref()
 let list = ref([])
 
 let model = ref({
-  viewCount: 10,
+  viewCount: 4,
   totalList: 0,
   loading: true,
   headers: [{
@@ -194,12 +110,12 @@ let model = ref({
     {title: '휴가 시작일', key: 'vctnStrDt'},
     {title: '휴가 마지막일', key: 'vctnEndDt'},
     {title: '휴가 신청일', key: 'vctnAplDtm'},
-    {title: '신청 상태', key: 'vctnStNm'},
+    {title: '신청 상태', key: 'vctnStCd'},
+
   ],
-  noKeyword: '',
-  nmKeyword: '',
-  stKeyword: '',
-  aplDt: '',
+  vctnNo:'',
+  empNm: '',
+  aplDt:'',
   strDt: '',
   start: 0,
   cntPerPage: 0,
@@ -224,56 +140,23 @@ function getVctnFromApi() {
     } else {
       cntPerPage = pageData.itemsPerPage
     }
-
-    //신청 날자 검색 시 aplDt를 yyyy-mm-dd로 구성
-    if (model.value.aplDt != '' && model.value.aplDt != null) {
-      let date = model.value.aplDt
-      const result = formattedDate(date)
-
-      model.value.aplDt = result
-    }
-
-    //시작 날자 검색 시 strDt를 yyyy-mm-dd로 구성
-    if (model.value.strDt != '' && model.value.strDt != null) {
-      let date = model.value.strDt
-      const result = formattedDate(date)
-
-      model.value.strDt = result
-    }
-
-    //캘린더에서 넘긴 시작일 받아오기
-    const dateParam = router.currentRoute._rawValue.query.strDt
-
-    let startDate
-    let stParam
-    if (dateParam != null) {
-      model.value.strDt = dateParam
-      startDate = dateParam
-      stParam = '02'
-    } else {
-      startDate = model.value.strDt
-      stParam = model.value.stKeyword
-    }
 //검색
     let searchParam = {
-      noKeyword: model.value.noKeyword,
-      nmKeyword: model.value.nmKeyword,
-      stKeyword: stParam,
+      empNo: model.value.vctnNo,
+      empNm: model.value.empNm,
       aplDt: model.value.aplDt,
-      strDt: startDate,
       page: pageData.page,
       cntPerPage: cntPerPage,
     }
     //getAction
     const {data} = await store.vctnList(searchParam)
-    router.currentRoute._rawValue.query.strDt = null
 
-    if (data.value.data.vacationList === null) {
+    if (data.value.vacationList === null) {
       list = []
     } else {
-      list = data.value.data.vacationList
+      list = data.value.vacationList
     }
-    model.value.totalList = data.value.data.total
+    model.value.totalList = data.value.total
     model.value.viewCount = cntPerPage
     model.value.loading = false
 
@@ -281,7 +164,7 @@ function getVctnFromApi() {
 }
 
 function pagingSet() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const {page, itemsPerPage} = options.value
 
     const start = (page - 1) * itemsPerPage
@@ -296,28 +179,14 @@ function pagingSet() {
   })
 }
 
-function getColor(vctnStNm) {
-  if (vctnStNm === '반려') return 'red'
-  else if (vctnStNm === '신청') return 'orange'
-  else return 'green'
-}
 
-function showVctn(id) {
+function showVctn(vctnNo) {
   router.push({
     path: "/vc/vcDetail",
-    query: {vctnNo: id}
+    query: {vctnNo: vctnNo}
   })
 }
 
-function formattedDate(date) {
-  const dateObj = new Date(date)
-  const year = dateObj.getFullYear()
-  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0')
-  const day = (dateObj.getDate()).toString().padStart(2, '0')
-  const formattedDate = `${year}-${month}-${day}`
-
-  return formattedDate
-}
 
 </script>
 
