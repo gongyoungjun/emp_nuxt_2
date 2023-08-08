@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-console.log("mj layout....")
+console.log("layout....")
 import {useDisplay} from 'vuetify'
 
 const {lgAndUp, mdAndDown} = useDisplay()

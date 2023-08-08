@@ -12,44 +12,45 @@
       </div>
       <button type="submit">로그인</button>
     </form>
+    <p v-if="errorMessage">{{ errorMessage }}</p>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from 'nuxt/app';
-import { useAuthStore } from '../../store/auth';
+import { useAuthStore } from '../../store/login';
 import { ref } from 'vue';
 
 const router = useRouter();
-const authStore = useAuthStore();
+const { login: authLogin } = useAuthStore();
 
 const username = ref('');
 const password = ref('');
-
-let errorMessage = ref("")
+const errorMessage = ref("");
 
 async function login() {
-  errorMessage.value = ''
+  errorMessage.value = '';
 
   try {
-    const {data, error} = await authStore.login({
+    const response = await authLogin({
       empNm: username.value,
       empPwd: password.value,
     });
-    if (error.value != null) {
-      errorMessage.value = '전화번호 또는 비밀번호를 잘못 입력하셨습니다.'
-    } else {
-      if (data.value.code != '0000') {
-        errorMessage.value = data.value.message;
-      } else {
-        await router.push({path: '/main'})
-      }
+    const { data } = response;
+
+    if (data && data.value.code != '0000') {
+      errorMessage.value = data.value.message;
+    } else if (data && data.value.code == '0000') {
+      await router.push({ path: '/main' });
     }
   } catch (error) {
-    // API 호출 중 오류 발생
-    alert('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+    errorMessage.value = '로그인 중 오류가 발생했습니다. 다시 시도해주세요.';
   }
 }
+
+
+console.log(localStorage.getItem('Authorization'));  // "Authorization" 항목 조회
+console.log(localStorage.getItem('token'));         // "token" 항목 조회
 </script>
 
 <style scoped>

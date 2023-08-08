@@ -12,7 +12,7 @@
         >
           <v-row justify="start" style="margin-left: 110px">
             <p class="text-center" style="margin-right: 40px; margin-top: 30px">
-              사원 번호
+              휴가 번호
             </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
               <v-text-field
@@ -53,7 +53,7 @@
             :headers="model.headers"
             :items="list"
             :items-length="model.totalList"
-            :items-per-page="model.viewCount"
+            :items-per-page="model.listSize"
             :loading="model.loading"
             class="my-table-style"
             @update:options="options = $event"
@@ -98,7 +98,7 @@ let options = ref()
 let list = ref([])
 
 let model = ref({
-  viewCount: 4,
+  listSize: 4,
   totalList: 0,
   loading: true,
   headers: [{

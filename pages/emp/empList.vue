@@ -68,7 +68,7 @@
             :headers="model.headers"
             :items="list"
             :items-length="model.totalList"
-            :items-per-page="model.cntPerPage"
+            :items-per-page="model.listSize"
             :loading="model.loading"
             class="my-table-style"
             @update:options="options = $event"
@@ -130,7 +130,7 @@ let model = ref({
   empNm: '',
   rnkKeyword: '',
   start: 0,
-  cntPerPage: 4,
+  listSize: 4,
   indexPage: 0,
   indexPerPage: 0,
 })

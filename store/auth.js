@@ -17,10 +17,10 @@ export const useAuthStore = defineStore('auth', () => {
     /**
      * 로그인
      */
-    const login = async (param) => {
+/*    const login = async (param) => {
         const res = await useApi("post", "/login", param);
         return res;
-    }
+    }*/
     /**`
      * 로그아웃
      */
@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
         }*/
 
     return {
-        join, login, layoutStr
+        join
     }
 
 });

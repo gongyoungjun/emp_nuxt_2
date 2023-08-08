@@ -9,14 +9,13 @@
         <nuxt-link to="/vc/vcList">휴가 목록</nuxt-link>
       </nav>
       <nav>
-        <nuxt-link to="/vc/vcCreate">휴가 신청</nuxt-link>
+<!--        <nuxt-link to="/vc/vcCreate">휴가 신청</nuxt-link>-->
       </nav>
     </ul>
   </div>
 </template>
 
 <script>
-
 
 </script>
 
@@ -27,5 +26,4 @@
   padding: 20px;
 }
 
-/* 나머지 스타일들은 이전과 동일하게 유지됩니다. */
 </style>
