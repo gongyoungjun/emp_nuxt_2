@@ -1,18 +1,19 @@
 export default async (method:  "post" | "put" | "get" | "delete", url: string, req: {}) => {
     //토큰여부에따라 api 키사용여부 결정
-    // let user = JSON.parse(localStorage.getItem('user')!);
+    let token = localStorage.getItem('token')!
     //
     let apiKey, auth;
-    // if(user == undefined){
-    //     auth = 'a'
-    //     apiKey = 'a'
-    // }else{
-    //     auth = 'Authorization'
-    //     apiKey = 'Bearer ' + user.jwtTokens.accessToken
-    // }
+    if(token == undefined){
+        auth = 'a'
+        apiKey = 'a'
+    }else{
+        auth = 'Authorization'
+        apiKey = token
+    }
 
     auth = 'Authorization'
-    apiKey = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2OTA4NTQ1MjcsInN1YiI6IjEzIiwiZXhwIjoxNzIyMzkwNTI3fQ.mgjSswGzcRrJKKb8tte1rxRn2oRZy7dFejxVxDRS_EY'
+    // apiKey = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2OTA4NTQ1MjcsInN1YiI6IjEzIiwiZXhwIjoxNzIyMzkwNTI3fQ.mgjSswGzcRrJKKb8tte1rxRn2oRZy7dFejxVxDRS_EY'
+    // apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMiIsImlhdCI6MTY5MTQ3OTY5MiwiZXhwIjoxNjkxNDgzMjkyfQ.fO2OvsGSF_wYqFTcoiuvGM9bnXWFxl0juqmtPnABvq4'
 
     //파라미터 타입 결정
     let parmaType;

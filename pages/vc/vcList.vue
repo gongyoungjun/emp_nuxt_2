@@ -144,7 +144,7 @@ function getVctnFromApi() {
     let searchParam = {
       empNo: model.value.vctnNo,
       empNm: model.value.empNm,
-      aplDt: model.value.aplDt,
+
       page: pageData.page,
       cntPerPage: cntPerPage,
     }
