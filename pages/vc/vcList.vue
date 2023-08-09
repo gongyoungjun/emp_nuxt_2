@@ -98,7 +98,6 @@ let options = ref()
 let list = ref([])
 
 let model = ref({
-  listSize: 4,
   totalList: 0,
   loading: true,
   headers: [{
@@ -115,10 +114,9 @@ let model = ref({
   ],
   vctnNo:'',
   empNm: '',
-  aplDt:'',
   strDt: '',
   start: 0,
-  cntPerPage: 0,
+  listSize: 4,
   indexPage: 0,
   indexPerPage: 0,
 })
@@ -134,19 +132,18 @@ watch(
 function getVctnFromApi() {
   model.value.loading = true
   pagingSet().then(async pageData => {
-    let cntPerPage
+    let listSize
     if (pageData.itemsPerPage === -1) {
-      cntPerPage = model.value.totalList
+      listSize = model.value.totalList
     } else {
-      cntPerPage = pageData.itemsPerPage
+      listSize = pageData.itemsPerPage
     }
 //검색
     let searchParam = {
-      empNo: model.value.vctnNo,
+      vctnNo: model.value.vctnNo,
       empNm: model.value.empNm,
-
       page: pageData.page,
-      cntPerPage: cntPerPage,
+      listSize: listSize,
     }
     //getAction
     const {data} = await store.vctnList(searchParam)
@@ -157,7 +154,7 @@ function getVctnFromApi() {
       list = data.value.vacationList
     }
     model.value.totalList = data.value.total
-    model.value.viewCount = cntPerPage
+    model.value.viewCount = listSize
     model.value.loading = false
 
   })

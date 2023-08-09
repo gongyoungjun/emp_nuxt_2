@@ -146,17 +146,17 @@ watch(
 function getEmpFromApi() {
   model.value.loading = true
   pagingSet().then(async pageData => {
-    let cntPerPage
+    let listSize
     if (pageData.itemsPerPage === -1) {
-      cntPerPage = model.value.totalList
+      listSize = model.value.totalList
     } else {
-      cntPerPage = pageData.itemsPerPage
+      listSize = pageData.itemsPerPage
     }
     let searchParam = {
       empNo: model.value.empNo,
       empNm: model.value.empNm,
       page: pageData.page,
-      cntPerPage: cntPerPage
+      listSize: listSize
     }
     //getAction
     const {data} = await store.empList(searchParam)
@@ -166,7 +166,7 @@ function getEmpFromApi() {
     } else {
       list = data.value.list
     }
-    model.value.totalList = data.value.listCnt
+    model.value.totalList = data.value.listSize
     model.value.loading = false
   })
 }

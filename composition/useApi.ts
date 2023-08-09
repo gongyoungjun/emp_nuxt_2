@@ -1,38 +1,21 @@
-export default async (method:  "post" | "put" | "get" | "delete", url: string, req: {}) => {
-    //토큰여부에따라 api 키사용여부 결정
-    let token = localStorage.getItem('token')!
-    //
-    let apiKey, auth;
-    if(token == undefined){
-        auth = 'a'
-        apiKey = 'a'
-    }else{
-        auth = 'Authorization'
-        apiKey = token
-    }
+export default async (method: "post" | "put" | "get" | "delete", url: string, req: {} = {}) => {
+    const token = localStorage.getItem('token');
+    const auth = 'Authorization';
+    let apiKey = token || 'a'; // 토큰이 없으면 'a'를 기본값으로 사용
 
-    auth = 'Authorization'
-    // apiKey = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2OTA4NTQ1MjcsInN1YiI6IjEzIiwiZXhwIjoxNzIyMzkwNTI3fQ.mgjSswGzcRrJKKb8tte1rxRn2oRZy7dFejxVxDRS_EY'
-    // apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMiIsImlhdCI6MTY5MTQ3OTY5MiwiZXhwIjoxNjkxNDgzMjkyfQ.fO2OvsGSF_wYqFTcoiuvGM9bnXWFxl0juqmtPnABvq4'
+    const isGetMethod = method.toLowerCase() === "get";
+    const paramType = isGetMethod ? 'params' : 'body';
 
-    //파라미터 타입 결정
-    let parmaType;
-    if(method.toLowerCase() == "get"){
-        parmaType = 'params'
-    }else{
-        parmaType = 'body'
-    }
-
-    let options = {
+    const options = {
         baseURL: '/api',
         method: method,
-        [parmaType]: req,
-        headers :{
+        [paramType]: req,
+        headers: {
             [auth]: apiKey,
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
+            // 'Access-Control-Allow-Origin': '*',
         }
-    }
+    };
 
-    return await useFetch(url, options)
+    return await useFetch(url, options);
 }

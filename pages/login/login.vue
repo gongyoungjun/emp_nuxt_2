@@ -3,8 +3,8 @@
     <h2>로그인</h2>
     <form @submit.prevent="login">
       <div class="form-group">
-        <label for="username">사용자 이름:</label>
-        <input type="text" id="username" v-model="username"/>
+        <label for="userPhn">사용자 전화번호:</label>
+        <input type="text" id="userPhn" v-model="userPhn"/>
       </div>
       <div class="form-group">
         <label for="password">비밀번호:</label>
@@ -24,16 +24,22 @@ import { ref } from 'vue';
 const router = useRouter();
 const { login: authLogin } = useAuthStore();
 
-const username = ref('');
+const userPhn = ref('');
 const password = ref('');
 const errorMessage = ref("");
+
+// 로그인 페이지에 접속했을 때 이미 로그인된 상태인지 확인
+if (localStorage.getItem('token')) {
+  router.push({ path: '/main' });
+}
+
 
 async function login() {
   errorMessage.value = '';
 
   try {
     const response = await authLogin({
-      empNm: username.value,
+      empPhn: userPhn.value,
       empPwd: password.value,
     });
     const { data } = response;
@@ -41,6 +47,8 @@ async function login() {
     if (data && data.value.code != '0000') {
       errorMessage.value = data.value.message;
     } else if (data && data.value.code == '0000') {
+      // 토큰을 로컬 스토리지에 저장
+      localStorage.setItem('token', data.value.token);
       await router.push({ path: '/main' });
     }
   } catch (error) {
