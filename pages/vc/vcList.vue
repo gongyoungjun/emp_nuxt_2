@@ -2,7 +2,7 @@
   <v-card>
     <v-container class="container-style" style="font-size: 14px;">
       <v-form @submit.prevent="getVctnFromApi">
-        <v-card-text class="search-box">
+        <v-card-text class="search-box" style="height: 200px;">
           <v-row justify="start" style="margin-left: 110px">
             <!-- 휴가 번호 -->
             <p class="text-center" style="margin-right: 40px; margin-top: 30px">
@@ -24,22 +24,24 @@
               검색
             </v-btn>
           </v-row>
+
           <v-row justify="start" style="margin-left: 110px">
             <!-- 시작일 -->
             <p class="text-center" style="margin-right: 40px; margin-top: 30px">
               시작일
             </p>
             <v-col cols="3" md="3" style="margin-top: 16px">
-              <input type="date" v-model="model.strDt" @change="getVctnFromApi">
+              <input type="date" v-model="model.vctnStrDt" @change="getVctnFromApi">
             </v-col>
             <!-- 종료일 -->
             <p class="text-center" style="margin-right: 80px; margin-top: 30px">
-              신청일
+              종료일
             </p>
             <v-col cols="3" md="3" style="margin-left: -39px; margin-top: 16px">
-              <input type="date" v-model="model.vctnAplDtm" @change="getVctnFromApi">
+              <input type="date" v-model="model.vctnEndDt" @change="getVctnFromApi">
             </v-col>
           </v-row>
+
         </v-card-text>
       </v-form>
       <v-spacer></v-spacer>
@@ -106,8 +108,8 @@ let model = ref({
   ],
   vctnNo: '',
   empNm: '',
-  strDt: '',
-  endDt: '',
+  vctnStrDt: '',
+  vctnEndDt: '',
   start: 0,
   listSize: 4,
   indexPage: 0,
@@ -140,8 +142,8 @@ function getVctnFromApi() {
     let searchParam = {
       vctnNo: model.value.vctnNo,
       empNm: model.value.empNm,
-      strDt: model.value.strDt,
-      vctnAplDtm: model.value.vctnAplDtm,
+      vctnStrDt: model.value.vctnStrDt,
+      vctnEndDt: model.value.vctnEndDt,
       page: pageData.page,
       listSize: listSize,
     }
