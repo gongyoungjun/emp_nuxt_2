@@ -1,3 +1,22 @@
+
+<template>
+  <v-card>
+    <v-date-picker v-model="selectedDate"></v-date-picker>
+  </v-card>
+</template>
+
+
+<script>
+export default {
+  data() {
+    return {
+      selectedDate: new Date().toISOString().substr(0, 10) // 오늘 날짜를 기본값으로 설정
+    };
+  }
+};
+</script>
+
+<!--
 <template>
   <v-card>
     <v-container
@@ -308,4 +327,4 @@ function showEmp(empNo){
 }
 
 
-</style>
+</style>-->

@@ -17,5 +17,5 @@ export default async (method: "post" | "put" | "get" | "delete", url: string, re
         }
     };
 
-    return await useFetch(url, options);
+    return useFetch(url, options);
 }

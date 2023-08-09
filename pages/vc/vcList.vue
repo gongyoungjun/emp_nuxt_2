@@ -1,49 +1,45 @@
 <template>
   <v-card>
-    <v-container
-        class="container-style"
-        style="font-size: 14px;"
-    >
-      <v-form
-          @submit.prevent="getVctnFromApi"
-      >
-        <v-card-text
-            class="search-box"
-        >
+    <v-container class="container-style" style="font-size: 14px;">
+      <v-form @submit.prevent="getVctnFromApi">
+        <v-card-text class="search-box">
           <v-row justify="start" style="margin-left: 110px">
+            <!-- 휴가 번호 -->
             <p class="text-center" style="margin-right: 40px; margin-top: 30px">
               휴가 번호
             </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
-              <v-text-field
-                  v-model="model.vctnNo"
-                  variant="underlined"
-                  class="text-box"
-                  clearable
-                  @keyup.enter="getVctnFromApi"
-              ></v-text-field>
+              <v-text-field v-model="model.vctnNo" variant="underlined" class="text-box" clearable
+                            @keyup.enter="getVctnFromApi"></v-text-field>
             </v-col>
+            <!-- 이름 -->
             <p class="text-center" style="margin-right: 80px; margin-top: 30px">
               이름
             </p>
             <v-col cols="3" md="3" style="margin-left: -39px; margin-top: -6px">
-              <v-text-field
-                  v-model="model.empNm"
-                  variant="underlined"
-                  class="text-box"
-                  clearable
-                  @keyup.enter="getVctnFromApi"
-              ></v-text-field>
+              <v-text-field v-model="model.empNm" variant="underlined" class="text-box" clearable
+                            @keyup.enter="getVctnFromApi"></v-text-field>
+            </v-col>
+            <v-btn variant="text" class="me-4" @click="getVctnFromApi" append-icon="mdi-magnify">
+              검색
+            </v-btn>
+          </v-row>
+          <v-row justify="start" style="margin-left: 110px">
+            <!-- 시작일 -->
+            <p class="text-center" style="margin-right: 40px; margin-top: 30px">
+              시작일
+            </p>
+            <v-col cols="3" md="3" style="margin-top: 16px">
+              <input type="date" v-model="model.strDt" @change="getVctnFromApi">
+            </v-col>
+            <!-- 종료일 -->
+            <p class="text-center" style="margin-right: 80px; margin-top: 30px">
+              신청일
+            </p>
+            <v-col cols="3" md="3" style="margin-left: -39px; margin-top: 16px">
+              <input type="date" v-model="model.vctnAplDtm" @change="getVctnFromApi">
             </v-col>
           </v-row>
-              <v-btn
-                  variant="text"
-                  class="me-4"
-                  @click="getVctnFromApi"
-                  append-icon="mdi-magnify"
-              >
-                검색
-              </v-btn>
         </v-card-text>
       </v-form>
       <v-spacer></v-spacer>
@@ -67,6 +63,7 @@
               <td> {{ item.columns.vctnKndNm }}</td>
               <td> {{ item.columns.vctnStrDt }}</td>
               <td> {{ item.columns.vctnEndDt }}</td>
+              <td> {{ vctnTotal(item.columns.vctnStrDt, item.columns.vctnEndDt) }} 일</td>
               <td> {{ item.columns.vctnAplDtm }}</td>
               <td> {{ item.columns.vctnStCd }}</td>
             </tr>
@@ -84,15 +81,9 @@ import {VDataTableServer} from 'vuetify/labs/VDataTable'
 import {ref, watch} from "vue";
 import {useRouter} from "nuxt/app";
 
+
 const router = useRouter()
 const store = useVctnStore()
-
-const state = ref([
-  {name: '전체', value: ''},
-  {name: '신청', value: '01'},
-  {name: '승인', value: '02'},
-  {name: '반려', value: '03'},
-])
 
 let options = ref()
 let list = ref([])
@@ -108,13 +99,15 @@ let model = ref({
     {title: '휴가 종류', key: 'vctnKndNm'},
     {title: '휴가 시작일', key: 'vctnStrDt'},
     {title: '휴가 마지막일', key: 'vctnEndDt'},
+    {title: '총 휴가 일수', key: 'vctnTotalDays'},
     {title: '휴가 신청일', key: 'vctnAplDtm'},
     {title: '신청 상태', key: 'vctnStCd'},
 
   ],
-  vctnNo:'',
+  vctnNo: '',
   empNm: '',
   strDt: '',
+  endDt: '',
   start: 0,
   listSize: 4,
   indexPage: 0,
@@ -129,6 +122,10 @@ watch(
     {deep: true}
 )
 
+/**
+ * API 호출
+ * 휴가 목록 가져옴
+ */
 function getVctnFromApi() {
   model.value.loading = true
   pagingSet().then(async pageData => {
@@ -138,10 +135,13 @@ function getVctnFromApi() {
     } else {
       listSize = pageData.itemsPerPage
     }
+
 //검색
     let searchParam = {
       vctnNo: model.value.vctnNo,
       empNm: model.value.empNm,
+      strDt: model.value.strDt,
+      vctnAplDtm: model.value.vctnAplDtm,
       page: pageData.page,
       listSize: listSize,
     }
@@ -160,6 +160,19 @@ function getVctnFromApi() {
   })
 }
 
+/**
+ * 휴가 총 일수 계산
+ */
+function vctnTotal(start, end) {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const difference = endDate - startDate;
+  return Math.ceil(difference / (1000 * 60 * 60 * 24)) + 1;
+}
+
+/**
+ * 페이징 옵션 설정
+ */
 function pagingSet() {
   return new Promise((resolve) => {
     const {page, itemsPerPage} = options.value
@@ -176,7 +189,10 @@ function pagingSet() {
   })
 }
 
-
+/**
+ * 휴가번호로 상세페이지
+ * @param vctnNo
+ */
 function showVctn(vctnNo) {
   router.push({
     path: "/vc/vcDetail",

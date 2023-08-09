@@ -29,10 +29,12 @@ const password = ref('');
 const errorMessage = ref("");
 
 // 로그인 페이지에 접속했을 때 이미 로그인된 상태인지 확인
-if (localStorage.getItem('token')) {
+const tokenInLocalStorage = localStorage.getItem('token');
+console.log('토큰 확인:', tokenInLocalStorage);  // 페이지 로딩 시 토큰 확인
+
+if (tokenInLocalStorage) {
   router.push({ path: '/main' });
 }
-
 
 async function login() {
   errorMessage.value = '';
@@ -49,16 +51,16 @@ async function login() {
     } else if (data && data.value.code == '0000') {
       // 토큰을 로컬 스토리지에 저장
       localStorage.setItem('token', data.value.token);
+
+      // 토큰 확인
+      console.log('로그인 후 토큰:', localStorage.getItem('token'));
+
       await router.push({ path: '/main' });
     }
   } catch (error) {
     errorMessage.value = '로그인 중 오류가 발생했습니다. 다시 시도해주세요.';
   }
 }
-
-
-console.log(localStorage.getItem('Authorization'));  // "Authorization" 항목 조회
-console.log(localStorage.getItem('token'));         // "token" 항목 조회
 </script>
 
 <style scoped>
