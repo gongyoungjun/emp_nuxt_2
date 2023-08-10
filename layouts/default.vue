@@ -24,6 +24,8 @@ const {lgAndUp, mdAndDown} = useDisplay()
 </script>
 
 <style lang="scss">
+
+
 .layout-vertical-nav {
     top: 0 !important;
     height: 100% !important;

@@ -188,11 +188,6 @@ function pagingSet() {
     })
   })
 }
-/*
-function showEmp(empNo) {
-  router.push({ name: '/emp/empDetail', params: { empNo } });
-}
-*/
 
 function showEmp(empNo) {
   router.push({
@@ -201,24 +196,18 @@ function showEmp(empNo) {
   })
 }
 
-
-/*let empDetailData = ref({});
-function showEmp(empNo) {
-  console.log("@@@@@@@@ ", empNo)
-  store.empInfoUser(empNo) // 여기에서 호출
-      .then(data => {
-        empDetailData.value = data; // empDetailData에 할당
-      })
-      .catch(error => {
-        console.error(error)
-      });
-
-  router.push({
-    path: "/emp/empDetail",
-    query: {empNo: empNo}
-  })
-}*/
 </script>
+
+<script>
+import DefaultLayout from '@/layouts/default.vue';
+
+export default {
+  components: {
+    DefaultLayout
+  }
+};
+</script>
+
 
 <style scoped>
 .container-style {

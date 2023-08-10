@@ -1,7 +1,6 @@
 export default defineNuxtConfig({
     ssr: false,
-    runtimeConfig: {
-    },
+    runtimeConfig: {},
     css: [
         'vuetify/lib/styles/main.sass'
         , '@mdi/font/css/materialdesignicons.min.css'
@@ -26,6 +25,7 @@ export default defineNuxtConfig({
             },
         },
     },
+
     modules: [
         [
             '@pinia/nuxt',
@@ -37,4 +37,5 @@ export default defineNuxtConfig({
 
         ],
     ],
+
 })

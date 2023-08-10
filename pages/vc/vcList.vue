@@ -26,20 +26,21 @@
           </v-row>
 
           <v-row justify="start" style="margin-left: 110px">
-            <!-- 시작일 -->
             <p class="text-center" style="margin-right: 40px; margin-top: 30px">
               시작일
             </p>
             <v-col cols="3" md="3" style="margin-top: 16px">
-              <input type="date" v-model="model.vctnStrDt" @change="getVctnFromApi">
+              <input type="date" v-model="model.strDt" @change="getVctnFromApi">
             </v-col>
-            <!-- 종료일 -->
-            <p class="text-center" style="margin-right: 80px; margin-top: 30px">
+
+            <p class="text-center" style="margin-right: 32px; margin-top: 30px">
               종료일
             </p>
-            <v-col cols="3" md="3" style="margin-left: -39px; margin-top: 16px">
-              <input type="date" v-model="model.vctnEndDt" @change="getVctnFromApi">
+            <v-col cols="3" md="3" style="margin-top: 16px">
+              <input type="date" v-model="model.endDt" @change="getVctnFromApi">
             </v-col>
+
+
           </v-row>
 
         </v-card-text>
@@ -110,6 +111,8 @@ let model = ref({
   empNm: '',
   vctnStrDt: '',
   vctnEndDt: '',
+  strDt:'',
+  endDt:'',
   start: 0,
   listSize: 4,
   indexPage: 0,
@@ -138,15 +141,16 @@ function getVctnFromApi() {
       listSize = pageData.itemsPerPage
     }
 
-//검색
+    //검색
     let searchParam = {
       vctnNo: model.value.vctnNo,
       empNm: model.value.empNm,
-      vctnStrDt: model.value.vctnStrDt,
-      vctnEndDt: model.value.vctnEndDt,
+      strDt: model.value.strDt,
+      endDt: model.value.endDt,
       page: pageData.page,
       listSize: listSize,
     }
+
     //getAction
     const {data} = await store.vctnList(searchParam)
 
@@ -155,6 +159,8 @@ function getVctnFromApi() {
     } else {
       list = data.value.vacationList
     }
+
+
     model.value.totalList = data.value.total
     model.value.viewCount = listSize
     model.value.loading = false
