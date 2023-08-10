@@ -2,9 +2,9 @@
   <div class="container">
     <button @click="getCurrentPosition" class="location-btn">현재 위치 가져오기</button>
     <p v-if="coords.latitude && coords.longitude" class="coords-text">좌표: {{ coords.latitude }}, {{ coords.longitude }}</p>
-<!--    <p class="address-text">주소: {{ address.value }}</p>-->
-    <p v-if="address.value" class="address-text">주소: {{ address.value.name }}</p>
+    <p v-if="address" class="address-text">주소: {{ address }}</p>
     <button @click="sendData" class="send-btn">정보 전송하기</button>
+
   </div>
 </template>
 
@@ -86,6 +86,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 .container {
