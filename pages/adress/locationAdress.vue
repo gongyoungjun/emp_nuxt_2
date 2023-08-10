@@ -2,80 +2,13 @@
   <div class="container">
     <button @click="getCurrentPosition" class="location-btn">현재 위치 가져오기</button>
     <p v-if="coords.latitude && coords.longitude" class="coords-text">좌표: {{ coords.latitude }}, {{ coords.longitude }}</p>
-    <p class="address-text">주소: {{ address.value }}</p>
-<!--    <p v-if="address.value" class="address-text">주소: {{ address.value }}</p>-->
+<!--    <p class="address-text">주소: {{ address.value }}</p>-->
+    <p v-if="address.value" class="address-text">주소: {{ address.value.name }}</p>
     <button @click="sendData" class="send-btn">정보 전송하기</button>
   </div>
 </template>
 
-<script setup>
-import {reactive, ref} from 'vue';
-import { useRouter } from 'nuxt/app';
-
-const router = useRouter();
-
-const coords = reactive({
-  latitude: null,
-  longitude: null
-});
-
-const address = ref('');
-/**
- * geolocation API
- * getCurrentPosition -> 위치 정보
- */
-const getCurrentPosition = () => {
-  if (process.client && navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(position => {
-      coords.latitude = position.coords.latitude;
-      coords.longitude = position.coords.longitude;
-      getAddress(coords.latitude, coords.longitude);
-    }, error => {
-      console.error("Error:", error);
-      alert("위치 정보를 가져오는데 실패");
-    });
-  } else {
-    alert("API 지원X");
-  }
-};
-
-/**
- * 주소 호출
- * https://apis.map.kakao.com/web/guide/
- * https://developers.kakao.com/console/app/952724
- */
-const getAddress = async (lat, lng) => {
-  const apiKey = 'f560cc539bb67250f4abca77cee2a9ec';
-  try {
-    const response = await fetch(`https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`, {
-      headers: {
-        'Authorization': `KakaoAK ${apiKey}`
-      }
-    });
-    const data = await response.json();
-    if (data.documents && data.documents.length > 0) {
-      address.value = data.documents[0].address.address_name;
-    }
-  } catch (error) {
-    console.error("주소 에러:", error);
-  }
-};
-
-
-const sendData = () => {
-  router.replace({
-    path: "/adress/test",
-    query: {
-      latitude: coords.latitude.toString(),
-      longitude: coords.longitude.toString(),
-      address: address.value
-    }
-  });
-};
-
-</script>
-
-<!--<script>
+<script>
 import {reactive, ref} from 'vue';
 import { useRouter } from 'nuxt/app';
 export default {
@@ -152,7 +85,7 @@ export default {
     };
   }
 }
-</script> -->
+</script>
 
 <style scoped>
 .container {
@@ -191,3 +124,72 @@ export default {
   color: #333;
 }
 </style>
+
+
+<!--
+<script setup>
+import {reactive, ref} from 'vue';
+import { useRouter } from 'nuxt/app';
+
+const router = useRouter();
+
+const coords = reactive({
+  latitude: null,
+  longitude: null
+});
+
+const address = ref('');
+/**
+ * geolocation API
+ * getCurrentPosition -> 위치 정보
+ */
+const getCurrentPosition = () => {
+  if (process.client && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(position => {
+      coords.latitude = position.coords.latitude;
+      coords.longitude = position.coords.longitude;
+      getAddress(coords.latitude, coords.longitude);
+    }, error => {
+      console.error("Error:", error);
+      alert("위치 정보를 가져오는데 실패");
+    });
+  } else {
+    alert("API 지원X");
+  }
+};
+
+/**
+ * 주소 호출
+ * https://apis.map.kakao.com/web/guide/
+ * https://developers.kakao.com/console/app/952724
+ */
+const getAddress = async (lat, lng) => {
+  const apiKey = 'f560cc539bb67250f4abca77cee2a9ec';
+  try {
+    const response = await fetch(`https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lng}&y=${lat}`, {
+      headers: {
+        'Authorization': `KakaoAK ${apiKey}`
+      }
+    });
+    const data = await response.json();
+    if (data.documents && data.documents.length > 0) {
+      address.value = data.documents[0].address.address_name;
+    }
+  } catch (error) {
+    console.error("주소 에러:", error);
+  }
+};
+
+
+const sendData = () => {
+  router.replace({
+    path: "/adress/test",
+    query: {
+      latitude: coords.latitude.toString(),
+      longitude: coords.longitude.toString(),
+      address: address.value
+    }
+  });
+};
+
+</script>-->

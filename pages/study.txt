@@ -1,0 +1,14 @@
+<script setup>는 Vue 3 문법입니다.
+Composition API를 사용할 때 더 간결하고 명료한 코드를 작성
+
+<script setup>를 사용하면
+별도의 setup 함수를 선언할 필요가 없어진다
+
+하지만, export default와 같이 컴포넌트의 옵션을 정의해야 하는 경우나,
+기존의 data, methods, watch 등의 옵션을 사용하려는 경우에는 <script setup>를 사용하지 않고 기존 방식으로 컴포넌트를 정의
+
+사용하는 문맥과 필요에 따라 선택적으로 사용하면 좋다
+
+<script setup>와
+export default { setup() { ... } }
+둘 다의 장단점을 이해하고 상황에 맞게 사용하는 것이 중요

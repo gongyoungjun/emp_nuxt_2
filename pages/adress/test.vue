@@ -7,15 +7,16 @@
 </template>
 
 <script>
-import { useRoute } from 'nuxt/app';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   setup() {
-    const route = useRoute();
+    const store = useStore();
 
-    const latitude = route.query.latitude;
-    const longitude = route.query.longitude;
-    const address = route.query.address;
+    const latitude = computed(() => store.state.latitude);
+    const longitude = computed(() => store.state.longitude);
+    const address = computed(() => store.state.address);
 
     return {
       latitude,
