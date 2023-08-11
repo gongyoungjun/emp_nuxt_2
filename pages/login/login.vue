@@ -16,10 +16,14 @@
   </div>
 </template>
 
+
+
+
 <script setup>
 import { useRouter } from 'nuxt/app';
 import { useAuthStore } from '../../store/login';
 import { ref } from 'vue';
+import { onMounted } from 'vue';
 
 const router = useRouter();
 const { login: authLogin } = useAuthStore();
@@ -28,13 +32,28 @@ const userPhn = ref('');
 const password = ref('');
 const errorMessage = ref("");
 
-// 로그인 페이지에 접속했을 때 이미 로그인된 상태인지 확인
+/**
+ * onMounted
+ * component가 탑재된
+ * 라이플 싸이클 훅
+ *
+ */
+onMounted(() => {
+  const tokenInLocalStorage = localStorage.getItem('token');
+  console.log('토큰 확인:', tokenInLocalStorage);
+
+  if (tokenInLocalStorage) {
+    router.push({ path: '/main' });
+  }
+});
+
+/*// 로그인 페이지에 접속했을 때 이미 로그인된 상태인지 확인
 const tokenInLocalStorage = localStorage.getItem('token');
 console.log('토큰 확인:', tokenInLocalStorage);  // 페이지 로딩 시 토큰 확인
 
 if (tokenInLocalStorage) {
   router.push({ path: '/main' });
-}
+}*/
 
 async function login() {
   errorMessage.value = '';

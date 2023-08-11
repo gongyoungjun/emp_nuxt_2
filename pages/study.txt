@@ -1,4 +1,4 @@
-<script setup>는 Vue 3 문법입니다.
+<script setup> -> Vue 3 문법
 Composition API를 사용할 때 더 간결하고 명료한 코드를 작성
 
 <script setup>를 사용하면
@@ -12,3 +12,5 @@ Composition API를 사용할 때 더 간결하고 명료한 코드를 작성
 <script setup>와
 export default { setup() { ... } }
 둘 다의 장단점을 이해하고 상황에 맞게 사용하는 것이 중요
+
+<

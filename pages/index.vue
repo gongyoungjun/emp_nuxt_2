@@ -7,7 +7,7 @@
     <div v-else>
       <!-- 로그인 폼을 가져와서 보여줍니다 -->
       <LoginForm @loginSuccess="loginSuccess" @loginFailed="loginFailed" />
-      <nuxt-link to="/login/sign">회원가입</nuxt-link>
+<!--      <nuxt-link to="/login/sign">회원가입</nuxt-link>-->
     </div>
   </div>
 </template>
