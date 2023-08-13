@@ -146,27 +146,28 @@ async function sendData() {
   /**
    * 카카오 메세지
    */
-/*  if (responseData && responseData.data && responseData.data.value) {
+  if (responseData && responseData.data && responseData.data.value) {
     console.log("출퇴근 정보가 업데이트되었습니다.");
     sendKakaoMessage(`직원님이 ${isCommute.value ? "퇴근" : "출근"}하셨습니다. 위치: ${address.value}`);
     await router.push({path: '/emp/empTest'});
   } else {
     console.error("Error: 출퇴근 정보 업데이트에 실패했습니다.");
-  }*/
+  }
 
 }
 
-/*
 const sendKakaoMessage = (messageText) => {
-  const KAKAO_TOKEN = "YOUR_ACCESS_TOKEN";
+  const KAKAO_TOKEN = "f560cc539bb67250f4abca77cee2a9ec";
+  //나에게 보내기
   const KAKAO_API_URL = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
+  // 다른사람에게 보내기
+  // const KAKAO_API_URL = "https://kapi.kakao.com/v1/api/talk/friends/message/default/send";
 
   const templateObject = {
     object_type: "text",
     text: messageText,
     link: {
-      web_url: "https://yourwebsite.com",
-      mobile_web_url: "https://m.yourwebsite.com"
+      web_url: "http://localhost:3000",
     }
   };
 
@@ -185,7 +186,6 @@ const sendKakaoMessage = (messageText) => {
       .then(data => console.log(data))
       .catch(error => console.error('Error:', error));
 }
-*/
 
 </script>
 

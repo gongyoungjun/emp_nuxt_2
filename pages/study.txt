@@ -13,4 +13,9 @@ Composition API를 사용할 때 더 간결하고 명료한 코드를 작성
 export default { setup() { ... } }
 둘 다의 장단점을 이해하고 상황에 맞게 사용하는 것이 중요
 
-<
+
+kakao
+
+quota(쿼타) -> 하루 제공 볼때
+
+https://developers.kakao.com/docs/latest/ko/quota/common
