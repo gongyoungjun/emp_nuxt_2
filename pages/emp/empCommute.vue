@@ -1,6 +1,12 @@
 <template>
   <div class="container">
-    <button @click="getCommute" class="commute-btn">{{ isCommute ? "퇴근" : "출근" }}</button>
+    <button
+        @click="getCommute"
+        class="commute-btn"
+        :class="{'checked-in': isCommute}">
+      {{ isCommute ? "퇴근" : "출근" }}
+    </button>
+    <br>
     <button @click="getCurrentPosition" class="location-btn">현재 위치 가져오기</button>
     <p v-if="coords.latitude && coords.longitude" class="coords-text">좌표: {{ coords.latitude }},
       {{ coords.longitude }}</p>
@@ -13,8 +19,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
-import { useRouter } from 'nuxt/app';
+import {ref, onMounted, reactive} from 'vue';
+import {useRouter} from 'nuxt/app';
 import {useEmpStore} from "~/store/emp";
 
 const router = useRouter();
@@ -31,7 +37,6 @@ const isCommute = ref(false); // 출퇴근 상태를 나타내는 변수
 const getCommute = () => {
   isCommute.value = !isCommute.value;
 };
-
 
 
 /**
@@ -120,8 +125,10 @@ async function sendData() {
     workType: isCommute.value ? "퇴근" : "출근"
   };
 
+  /**
+   * 백엔드로 출퇴근 정보 업데이트
+   */
   try {
-    // 백엔드 API 호출로 출퇴근 정보 업데이트
     const response = await store.empCommute(requestBody);
 
     const responseData = await response.json();
@@ -135,11 +142,52 @@ async function sendData() {
   } catch (error) {
     console.error("API 호출 에러:", error);
   }
+
+  /**
+   * 카카오 메세지
+   */
+/*  if (responseData && responseData.data && responseData.data.value) {
+    console.log("출퇴근 정보가 업데이트되었습니다.");
+    sendKakaoMessage(`직원님이 ${isCommute.value ? "퇴근" : "출근"}하셨습니다. 위치: ${address.value}`);
+    await router.push({path: '/emp/empTest'});
+  } else {
+    console.error("Error: 출퇴근 정보 업데이트에 실패했습니다.");
+  }*/
+
 }
 
+/*
+const sendKakaoMessage = (messageText) => {
+  const KAKAO_TOKEN = "YOUR_ACCESS_TOKEN";
+  const KAKAO_API_URL = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
+
+  const templateObject = {
+    object_type: "text",
+    text: messageText,
+    link: {
+      web_url: "https://yourwebsite.com",
+      mobile_web_url: "https://m.yourwebsite.com"
+    }
+  };
+
+  const formData = new URLSearchParams();
+  formData.append('template_object', JSON.stringify(templateObject));
+
+  fetch(KAKAO_API_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${KAKAO_TOKEN}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: formData
+  })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+}
+*/
 
 </script>
-
 
 
 <style scoped>
@@ -163,7 +211,7 @@ async function sendData() {
   border: none;
   border-radius: 5px;
   color: white;
-  background-color: #4CAF50;
+  background-color: #a8a8a8;
   cursor: pointer;
   margin-bottom: 20px;
   transition: background-color 0.3s;
@@ -201,5 +249,22 @@ async function sendData() {
   margin: 50px auto;
 }
 
+.commute-btn:not(.checked-in) {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.commute-btn:not(.checked-in):hover {
+  background-color: #45a049;
+}
+
+.commute-btn.checked-in {
+  background-color: #f44336;
+  color: white;
+}
+
+.commute-btn.checked-in:hover {
+  background-color: #d32f2f;
+}
 
 </style>
