@@ -1,7 +1,7 @@
 <template>
   <div class="container">
+    <button @click="getCommute" class="commute-btn">{{ isCommute ? "퇴근" : "출근" }}</button>
     <button @click="getCurrentPosition" class="location-btn">현재 위치 가져오기</button>
-
     <p v-if="coords.latitude && coords.longitude" class="coords-text">좌표: {{ coords.latitude }},
       {{ coords.longitude }}</p>
 
@@ -15,18 +15,27 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
 import { useRouter } from 'nuxt/app';
+import {useEmpStore} from "~/store/emp";
 
 const router = useRouter();
+const store = useEmpStore();
+
 const coords = reactive({
   latitude: null,
   longitude: null
 });
 
 const address = ref('');
+const isCommute = ref(false); // 출퇴근 상태를 나타내는 변수
+
+const getCommute = () => {
+  isCommute.value = !isCommute.value;
+};
+
+
 
 /**
- * geolocation API
- * getCurrentPosition -> 위치 정보
+ * 위도 경도
  */
 const getCurrentPosition = () => {
   if (process.client && navigator.geolocation) {
@@ -46,8 +55,6 @@ const getCurrentPosition = () => {
 
 /**
  * 주소 호출
- * https://apis.map.kakao.com/web/guide/
- * https://developers.kakao.com/console/app/952724
  */
 const getAddress = async (lat, lng) => {
   const apiKey = 'f560cc539bb67250f4abca77cee2a9ec';
@@ -104,16 +111,33 @@ const initMap = async () => {
   }
 };
 
-const sendData = () => {
-  router.replace({
-    path: "/address/test",
-    query: {
-      latitude: coords.latitude.toString(),
-      longitude: coords.longitude.toString(),
-      address: address.value
+async function sendData() {
+  const pointFormat = `POINT(${coords.longitude} ${coords.latitude})`;
+
+  const requestBody = {
+    geoLoc: pointFormat,
+    address: address.value,
+    workType: isCommute.value ? "퇴근" : "출근"
+  };
+
+  try {
+    // 백엔드 API 호출로 출퇴근 정보 업데이트
+    const response = await store.empCommute(requestBody);
+
+    const responseData = await response.json();
+
+    if (responseData && responseData.data && responseData.data.value) {
+      console.log("출퇴근 정보가 업데이트되었습니다.");
+      await router.push({path: '/emp/empTest'});
+    } else {
+      console.error("Error: 출퇴근 정보 업데이트에 실패했습니다.");
     }
-  });
-};
+  } catch (error) {
+    console.error("API 호출 에러:", error);
+  }
+}
+
+
 </script>
 
 

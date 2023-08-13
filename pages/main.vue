@@ -7,6 +7,7 @@
     <ul class="menu-list">
       <li><nuxt-link to="/emp/empList">직원 목록</nuxt-link></li>
       <li><nuxt-link to="/vc/vcList">휴가 목록</nuxt-link></li>
+      <li><nuxt-link to="/emp/empCommute">출퇴근</nuxt-link></li>
       <li><nuxt-link to="/address/address">주소 가져오기</nuxt-link></li>
       <li><nuxt-link to="/address/locationAddress">위치기반 주소 가져오기</nuxt-link></li>
     </ul>
