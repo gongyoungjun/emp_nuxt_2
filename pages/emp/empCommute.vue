@@ -59,7 +59,7 @@ onMounted(() => {
     script.addEventListener('load', () => {
       kakao.maps.load(() => {
         initMap();
-        loadFriendsList(); // 친구 목록 불러오기 함수 호출
+        // loadFriendsList(); // 친구 목록 불러오기 함수 호출
       });
     });
     document.head.appendChild(script);
@@ -71,6 +71,7 @@ onMounted(() => {
     kakaoLoginScript.src = "//developers.kakao.com/sdk/js/kakao.js";
     kakaoLoginScript.addEventListener('load', () => {
       Kakao.init('7ab35a2ef3b2ad6d27aa8a80bfc99a3a');  // 카카오 앱 키
+      loadFriendsList(); // 친구 목록 불러오기 함수 호출
     });
     document.head.appendChild(kakaoLoginScript);
   }
@@ -445,7 +446,7 @@ const kakaoLogin = () => {
   border: none;
   border-radius: 5px;
   color: white;
-  background-color: #ffcd00; /* 카카오 브랜드 컬러 */
+  background-color: #ffcd00;
   cursor: pointer;
   margin-bottom: 20px;
   transition: background-color 0.3s;
@@ -462,7 +463,7 @@ const kakaoLogin = () => {
   border: none;
   border-radius: 5px;
   color: white;
-  background-color: #ff6b00; /* 카카오 브랜드 컬러 */
+  background-color: #ff6b00;
   cursor: pointer;
   margin-bottom: 20px;
   transition: background-color 0.3s;
@@ -479,7 +480,7 @@ const kakaoLogin = () => {
   border: none;
   border-radius: 5px;
   color: white;
-  background-color: #3c1e1e; /* 다른 컬러 선택 */
+  background-color: #3c1e1e;
   cursor: pointer;
   margin-bottom: 20px;
   transition: background-color 0.3s;
