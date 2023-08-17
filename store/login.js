@@ -4,7 +4,6 @@ import { ref } from "vue";
 
 export const useAuthStore = defineStore('auth', () => {
     const token = ref(''); // 토큰을 저장하는 ref 변수
-    let layoutStr = ref('user');
 
     const setToken = (newToken) => {
         token.value = newToken;
@@ -42,10 +41,24 @@ export const useAuthStore = defineStore('auth', () => {
         token.value = '';
         localStorage.removeItem('token'); // localStorage에서 토큰 제거
     }
+    /**
+     * 카카오톡
+     * 로그인
+     */
+
+    /**
+     * 카카오 회원가입
+     */
+    const kakaoJoin = async (param) => {
+        console.log("카카오 회원가입", param)
+        return await useApi("post", "/kakao/signup", param);
+    }
+
 
     return {
         getToken, // 현재 토큰 가져오기
         login,   // 로그인 함수
-        logout   // 로그아웃 함수
+        logout,   // 로그아웃 함수
+        kakaoJoin
     }
 });

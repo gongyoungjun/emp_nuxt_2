@@ -1,0 +1,54 @@
+/*        if (authObj.refresh_token) {
+          sessionStorage.setItem('KAKAO_REFRESH_TOKEN', authObj.refresh_token);
+        }
+
+        if (authObj.access_token) {
+          sessionStorage.setItem('KAKAO_TOKEN', authObj.access_token);
+        }*/
+
+
+
+        /*async function getAccessToken(authCode) {
+          try {
+            const response = await fetch('https://kauth.kakao.com/oauth/token', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+              },
+              body: `grant_type=authorization_code&client_id=YOUR_APP_KEY&redirect_uri=YOUR_REDIRECT_URI&code=${authCode}`
+            });
+            const data = await response.json();
+            sessionStorage.setItem('KAKAO_TOKEN', data.access_token);
+            // 다음 로직 (예: 사용자 프로필 가져오기 등)
+          } catch (error) {
+            console.error('Error fetching access token:', error);
+          }
+        }
+
+        async function refreshAccessToken() {
+          const refreshToken = sessionStorage.getItem('KAKAO_REFRESH_TOKEN');
+
+          if (!refreshToken) {
+            console.error('리프레시 토큰이 없습니다.');
+            return null;
+          }
+
+          try {
+            const response = await fetch('https://kauth.kakao.com/oauth/token', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+              },
+              body: `grant_type=refresh_token&client_id=YOUR_APP_KEY&refresh_token=${refreshToken}`
+            });
+            const data = await response.json();
+            if (data.access_token) {
+              sessionStorage.setItem('KAKAO_TOKEN', data.access_token);
+              return data.access_token;
+            }
+          } catch (error) {
+            console.error('액세스 토큰 갱신 중 오류:', error);
+          }
+
+          return null;
+        }*/

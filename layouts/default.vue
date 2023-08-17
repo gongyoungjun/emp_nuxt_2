@@ -1,6 +1,10 @@
 <template>
     <div>
-    <v-app-bar><h1>공통 head</h1></v-app-bar>
+    <v-app-bar>
+
+<!--      <div class="menu-btn"><nuxt-link to="/main"><h1>목록</h1></nuxt-link></div>-->
+      <div ><h1>목록</h1></div>
+    </v-app-bar>
     <v-main class="w-100">
         <slot/>
     </v-main>
@@ -25,6 +29,17 @@ const {lgAndUp, mdAndDown} = useDisplay()
 
 <style lang="scss">
 
+.menu-btn {
+  padding: 10px 20px;
+  font-size: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 50px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  transition: background-color 0.3s;
+}
 
 .layout-vertical-nav {
     top: 0 !important;

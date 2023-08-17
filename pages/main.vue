@@ -8,7 +8,7 @@
       <li><nuxt-link to="/emp/empList">직원 목록</nuxt-link></li>
       <li><nuxt-link to="/vc/vcList">휴가 목록</nuxt-link></li>
       <li><nuxt-link to="/emp/empCommute">출퇴근</nuxt-link></li>
-      <li><nuxt-link to="/address/address">주소 가져오기</nuxt-link></li>
+<!--      <li><nuxt-link to="/address/address">주소 가져오기</nuxt-link></li>-->
       <li><nuxt-link to="/address/locationAddress">위치기반 주소 가져오기</nuxt-link></li>
     </ul>
   </div>
@@ -24,21 +24,43 @@ export default {
     function logout() {
       // 토큰 제거
       localStorage.removeItem('token');
+      sessionStorage.removeItem('KAKAO_TOKEN'); // 카카오 토큰도 제거
+      sessionStorage.removeItem('KAKAO_REFRESH_TOKEN');
+      sessionStorage.removeItem('KAKAO_ID_TOKEN');
+      sessionStorage.removeItem('idToken');
+      // 카카오 로그아웃 처리
+      if (window.Kakao && Kakao.Auth.getAccessToken()) {
+        Kakao.Auth.logout(() => {
+          console.log('카카오 로그아웃 완료');
+        });
+      }
+
       // 기본 주소
-      window.location.href = 'http://localhost:3000';
+      router.push('/');
     }
 
     return {
       logout
     };
+  },
+  mounted() {
+    // 카카오 SDK 로드 확인
+    if (!window.Kakao) {
+      const kakaoLoginScript = document.createElement('script');
+      kakaoLoginScript.src = "//developers.kakao.com/sdk/js/kakao.js";
+      kakaoLoginScript.addEventListener('load', () => {
+        Kakao.init('7ab35a2ef3b2ad6d27aa8a80bfc99a3a');  // 카카오 앱 키
+      });
+      document.head.appendChild(kakaoLoginScript);
+    }
   }
 }
 </script>
 
 <style scoped>
 .main-container {
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 800px;
+  margin: 100px auto;
   padding: 20px;
   background: #f7f9fc;
   border-radius: 8px;

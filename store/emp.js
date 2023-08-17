@@ -18,10 +18,17 @@ export const useEmpStore = defineStore('emp', () => {
 
 
     const empCommute = async (param) => {
-        console.log("사원수정정보", param);
+        console.log("사원출퇴근", param);
         return await useApi("post", "/emp/commute", param);
     }
+
+    const empEmail = async (param) => {
+        console.log("회원가입여부", param);
+        return await useApi("post", "/emp/emailCheck", param);
+    }
+
+
     return {
-        empList, empUpdate, empInfoUser,empCommute
+        empList, empUpdate, empInfoUser,empCommute,empEmail
     }
 });

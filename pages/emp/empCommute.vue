@@ -7,7 +7,7 @@
     <button @click="requestFriendsPermission" class="request-permission-btn">친구 목록 권한 요청</button>
 
     <!-- 친구 목록 불러오기 버튼 -->
-    <button @click="openFriends" class="open-friends--btn">친구 목록 불러오기</button>
+<!--    <button @click="openFriends" class="open-friends&#45;&#45;btn">친구 목록 불러오기</button>-->
 
     <!-- 출근/퇴근 버튼 -->
     <button @click="getCommute" class="commute-btn" :class="{'checked-in': isCommute}">
@@ -30,11 +30,9 @@
 import {ref, onMounted, reactive} from 'vue';
 import {useRouter} from 'nuxt/app';
 import {useEmpStore} from "~/store/emp";
-import {useKakaoAuthStore} from "~/store/kakao";
 
 const router = useRouter();
 const store = useEmpStore();
-const storeKakao = useKakaoAuthStore();
 
 const coords = reactive({
   latitude: null,
@@ -46,23 +44,29 @@ const isCommute = ref(false); // 출퇴근 상태를 나타내는 변수
 
 const friendsList = ref([]); // 친구 목록 저장
 const selectedFriend = ref(''); // 친구 고유 아이디(uuid)
+
 //출퇴근 버튼
 const getCommute = () => {
   isCommute.value = !isCommute.value;
 };
 
+/**
+ * 지도 SDK 로드 및 친구 목록 불러오기 함수 호출
+ * 컴포넌트가 마운트
+ * 호툴될 콜백 등록
+ */
 onMounted(() => {
   // 지도 SDK 로드 및 친구 목록 불러오기 함수 호출
   if (!window.kakao || !window.kakao.maps) {
-    const script = document.createElement('script');
+    const script = document.createElement('script'); // 문서의 요소 만듬
     script.src = "//dapi.kakao.com/v2/maps/sdk.js?appkey=7ab35a2ef3b2ad6d27aa8a80bfc99a3a&libraries=drawing&autoload=false";
-    script.addEventListener('load', () => {
+    script.addEventListener('load', () => {  // 이벤트 리스너
       kakao.maps.load(() => {
         initMap();
         // loadFriendsList(); // 친구 목록 불러오기 함수 호출
       });
     });
-    document.head.appendChild(script);
+    document.head.appendChild(script);  // 노드 추가
   }
 
   // 카카오 로그인 SDK 로드
@@ -71,7 +75,7 @@ onMounted(() => {
     kakaoLoginScript.src = "//developers.kakao.com/sdk/js/kakao.js";
     kakaoLoginScript.addEventListener('load', () => {
       Kakao.init('7ab35a2ef3b2ad6d27aa8a80bfc99a3a');  // 카카오 앱 키
-      loadFriendsList(); // 친구 목록 불러오기 함수 호출
+      //loadFriendsList(); // 친구 목록 불러오기 함수 호출
     });
     document.head.appendChild(kakaoLoginScript);
   }
@@ -132,7 +136,7 @@ const initMap = async () => {
       center: centerLatLng,
       level: 5,
     };
-    const map = new kakao.maps.Map(document.getElementById('map'), mapOptions);
+    const map = new kakao.maps.Map(document.getElementById('map'), mapOptions); // getElementById : ID 값을 지정하는 문자열
     // 좌표로 주소를 받아왔으므로 바로 마커 추가
     const marker = new kakao.maps.Marker({
       position: centerLatLng,
@@ -149,7 +153,7 @@ async function sendData() {
   const requestBody = {
     geoLoc: pointFormat,
     address: address.value,
-    workType: isCommute.value ? "02" : "01"
+    workcd: isCommute.value ? "02" : "01"
   };
   try {
     const response = await store.empCommute(requestBody);
@@ -183,49 +187,11 @@ async function sendData() {
  * 사용자 동의 o
  */
 
-
 /**
  * 카카오 메세지
  * 전송
  */
-/*const sendKakaoMessage = (messageText) => {
-  const KAKAO_TOKEN = sessionStorage.getItem('KAKAO_TOKEN');
-  if (!KAKAO_TOKEN) {
-    alert('카카오 로그인이 필요합니다.');
-    return;
-  }
-  // Kakao 객체 존재 여부 체크
 
-  if (!window.Kakao) {
-    console.error('Kakao SDK가 로드되지 않았습니다.');
-    return;
-  }
-  //나에게 보내기
-  const KAKAO_API_URL = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
-
-  const templateObject = {
-    object_type: "text",
-    text: messageText,
-    link: {
-      web_url: "http://localhost:3000",
-    }
-  };
-
-  const formData = new URLSearchParams();
-  formData.append('template_object', JSON.stringify(templateObject));
-
-  fetch(KAKAO_API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${KAKAO_TOKEN}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: formData
-  })
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
-}*/
 
 const sendKakaoMessage = async (messageText) => {
   const KAKAO_TOKEN = sessionStorage.getItem('KAKAO_TOKEN');
@@ -248,7 +214,7 @@ const sendKakaoMessage = async (messageText) => {
   };
 
   const formData = new URLSearchParams();
-  formData.append('template_object', JSON.stringify(templateObject));
+  formData.append('template_object', JSON.stringify(templateObject));  //json 객체를 string으로
 
   try {
     const response = await fetch(KAKAO_API_URL, {
@@ -342,6 +308,7 @@ const loadFriendsList = async () => {
   try {
     const response = await fetch('https://kapi.kakao.com/v1/api/talk/friends?limit=100', {
       headers: {
+        // 'Authorization': `Bearer 3vdqx6DTa1Mdr8As8YPf74vdKIvXcuVssTUfSGfzCioljgAAAYn8WCKp`
         'Authorization': `Bearer ${sessionStorage.getItem('KAKAO_TOKEN')}`
       },
       mode: 'cors'
@@ -386,7 +353,7 @@ const requestFriendsPermission = () => {
   });
 };
 
-const sendToSpecificFriend = (friendId, message) => {
+/* const sendToSpecificFriend = (friendId, message) => {
   if (!window.Kakao) {
     console.error('Kakao SDK가 로드되지 않았습니다.');
     return;
@@ -410,7 +377,7 @@ const sendToSpecificFriend = (friendId, message) => {
       alert('메시지 전송에 실패하였습니다.');
     },
   });
-};
+};*/
 
 
 /**
