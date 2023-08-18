@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
 */
 
     return {
-        join,kakaoJoin
+        join
     }
 
 });

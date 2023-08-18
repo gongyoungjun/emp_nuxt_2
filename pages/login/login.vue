@@ -16,7 +16,8 @@
 
 
     <br>
-    <a :href="KAKAO_AUTH_URL" class="kakaoAuthUrl">카카오톡으로 로그인</a>
+<!--    <button @click="handleKakaoAuth" class="handleKakaoAuth">카카오톡으로 로그인</button>-->
+        <a :href="KAKAO_AUTH_URL" class="kakaoAuthUrl">카카오톡으로 로그인</a>
     <p v-if="errorMessage">{{ errorMessage }}</p>
   </div>
 
@@ -37,8 +38,6 @@ const {login: authLogin} = useAuthStore();
 const userPhn = ref('');
 const password = ref('');
 const errorMessage = ref("");
-
-const KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/authorize?client_id=7ab35a2ef3b2ad6d27aa8a80bfc99a3a&redirect_uri=http://localhost:3000/login/code&response_type=code";
 
 
 async function login() {
@@ -92,14 +91,12 @@ onMounted(() => {
   console.log('토큰 확인:', tokenInLocalStorage);
 
   // 카카오 토큰 확인
-  const kakaoTokenInSession = sessionStorage.getItem('KAKAO_TOKEN');
-  console.log('카카오 토큰 확인:', kakaoTokenInSession);
+  /*  const kakaoTokenInSession = sessionStorage.getItem('KAKAO_TOKEN');
+    console.log('카카오 토큰 확인:', kakaoTokenInSession);*/
 
-  if (tokenInLocalStorage || kakaoTokenInSession) {
+  if (tokenInLocalStorage) {
     router.push({path: '/main'});
   }
-/*  let code = new URL(window.location.href).searchParams.get("code")
-      console.log('코드 확인:', code);*/
 
   // 카카오 SDK 로딩 로직
   if (!window.Kakao) {
@@ -113,42 +110,41 @@ onMounted(() => {
   }
 });
 
-const kakaoAuthUrl =() =>{
-  if (window.Kakao) {
-    Kakao.Auth.login({
-      success: async (authObj) => {
-        console.log('Kakao login success:', authObj);
+const KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/authorize?client_id=7ab35a2ef3b2ad6d27aa8a80bfc99a3a&redirect_uri=http://localhost:3000/login/code&response_type=code";
 
-        const idToken = authObj.id_token;
-        sessionStorage.setItem('idToken', idToken);
-        sessionStorage.setItem('KAKAO_TOKEN', authObj.access_token);
+const handleKakaoAuth = async () => {
+  try {
+    const response = await fetch(KAKAO_AUTH_URL);
+    const {access_token, id_token} = await response.json();
 
-        const profile = await getKakaoProfile();
-        const emailExists = await checkEmpEmail(profile.email);
+    sessionStorage.setItem('idToken', id_token);
+    sessionStorage.setItem('KAKAO_TOKEN', access_token);
 
-        if (emailExists) {
-          await router.push({path: '/main'});
-        } else {
-          await router.push({path: '/login/kakaoSign'});
-        }
-      },
-      fail: (error) => {
-        errorMessage.value = '카카오 로그인 실패. 다시 시도해주세요.';
-        console.error('카카오 로그인 실패:', error);
-      }
-    });
-  } else {
-    errorMessage.value = '카카오 SDK가 로드되지 않았습니다.';
+    const profile = await getKakaoProfile();
+    const emailExists = await checkEmpEmail(profile.email);
+
+    if (emailExists) {
+      await router.push({path: '/main'});
+    } else {
+      await router.push({path: '/login/kakaoSign'});
+    }
+  } catch (error) {
+    console.error('카카오 인가 에러:', error);
   }
-
 };
-
 
 const kakaoLogin = () => {
   if (window.Kakao) {
     Kakao.Auth.login({
       success: async (authObj) => {
         console.log('Kakao login success:', authObj);
+        const code = new URL(window.location.href).searchParams.get("code");  // 인가 코드 가져오기
+
+        // 백엔드로 인가 코드 보내기
+        const backendResponse = await sendCodeToBackend(code);
+        if (backendResponse && backendResponse.accessToken) {
+          // 백엔드에서 받은 액세스 토큰 처리 로직 (예: 저장 등)
+        }
 
         const idToken = authObj.id_token;
         sessionStorage.setItem('idToken', idToken);
@@ -192,15 +188,23 @@ const getKakaoProfile = () => {
   });
 };
 
-async function checkSnsKey(code) {
-  const response = await empStore.empEmail({code: code});
-  const data = response.data.value;
+async function sendCodeToBackend(code) {
+  try {
+    const response = await fetch("/api/kakao/token", {  // 백엔드의 엔드포인트
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({code})
+    });
 
-  console.log("코드:", data);
-
-  return data.list && data.list.length > 0;
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error sending code to backend:", error);
+    return null;
+  }
 }
-
 
 async function checkEmpEmail(email) {
   const response = await empStore.empEmail({empEml: email});

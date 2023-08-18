@@ -27,8 +27,12 @@ export const useEmpStore = defineStore('emp', () => {
         return await useApi("post", "/emp/emailCheck", param);
     }
 
+    const empSnsKey = async (param) => {
+        console.log("회원가입여부", param);
+        return await useApi("post", "/kakao/snsKey", param);
+    }
 
     return {
-        empList, empUpdate, empInfoUser,empCommute,empEmail
+        empList, empUpdate, empInfoUser,empCommute,empEmail,empSnsKey
     }
 });

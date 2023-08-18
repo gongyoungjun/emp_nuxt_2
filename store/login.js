@@ -23,12 +23,10 @@ export const useAuthStore = defineStore('auth', () => {
     const login = async (param) => {
         const res = await useApi("post", "/login", param);
 
-        // 응답 헤더에서 토큰 추출 (이 부분이 수정된 부분입니다)
         if (res && res.headers && res.headers.Authorization) {
             const tokenFromHeader = res.headers.Authorization.replace("Bearer ", ""); // "Bearer" 접두사 제거
             setToken(tokenFromHeader);
         } else if (res && res.data && res.data.value.token) {
-            // 만약 백엔드가 응답 본문에도 토큰을 포함시킬 경우를 대비하여 이 부분도 남겨둡니다.
             setToken(res.data.value.token);
         }
 
@@ -42,9 +40,26 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('token'); // localStorage에서 토큰 제거
     }
     /**
-     * 카카오톡
-     * 로그인
+     * 카카오톡 로그인
      */
+    const kakaoLogin = async (code) => {
+        if (!code) {
+            Error("인가 코드가 전달되지 않았습니다.");
+        }
+
+        try {
+            const response = await useApi("post", `/api/kakao/token?code=${code}`);
+
+            if (response && response.status.value !== 'success') {
+                console.error("서버 응답:", response);
+                console.error("오류 내용:", response.error.value); // 에러 내용을 출력합니다.
+            }
+
+            return response;
+        } catch (error) {
+           Error("카카오 로그인 중 에러 발생: " + error.message);
+        }
+    }
 
     /**
      * 카카오 회원가입
@@ -59,6 +74,7 @@ export const useAuthStore = defineStore('auth', () => {
         getToken, // 현재 토큰 가져오기
         login,   // 로그인 함수
         logout,   // 로그아웃 함수
+        kakaoLogin,
         kakaoJoin
     }
 });

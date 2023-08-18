@@ -54,12 +54,6 @@ const employee = ref({
 
 onMounted(async () => {
   // 카카오 프로필 로드
-  try {
-    const kakaoProfile = await getKakaoProfile();
-    employee.value.empEml = kakaoProfile.email;
-  } catch (error) {
-    console.error('카카오 프로필을 불러오는데 실패했습니다:', error);
-  }
   /**
    * 세션 스토리지에서 id_token 가져오기
    * jSON.parse = JSON 문자열의 구문을 분석
@@ -74,6 +68,8 @@ onMounted(async () => {
     const kakaoUserId = idTokenPayload.sub;
     employee.value.snsKey = kakaoUserId;
   }
+
+
 // URL에서 카카오 인증 코드 가져오기
   /*  const authCode = router.currentRoute.value.query.code;
     if (authCode) {
@@ -86,7 +82,7 @@ onMounted(async () => {
     }*/
 });
 
-const getKakaoProfile = () => {
+/*const getKakaoProfile = () => {
   return new Promise((resolve, reject) => {
     Kakao.API.request({
       url: '/v2/user/me',
@@ -102,7 +98,7 @@ const getKakaoProfile = () => {
       },
     });
   });
-};
+};*/
 
 const handleSubmit = async () => {
 
