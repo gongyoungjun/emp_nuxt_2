@@ -66,24 +66,6 @@ async function login() {
   }
 }
 
-/**
- * onMounted
- * component가 탑재된
- * 라이플 싸이클 훅
- *
- */
-
-
-/* // 로컬스토리지 - 키/벨류
-function logLocalStorageKeys() {
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    const value = localStorage.getItem(key);
-    console.log(`Key: ${key}, Value: ${value}`);
-  }
-}
-*/
-
 onMounted(() => {
   // logLocalStorageKeys();
   // 기존 토큰 확인 로직

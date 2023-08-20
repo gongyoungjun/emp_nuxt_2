@@ -62,19 +62,28 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     /**
+     * 카카오 업데이트
+     */
+    const kakaoUpdate = async (param) => {
+        console.log("카카오 프로필 업데이트", param)
+        return await useApi("put", "/kakao/update", param);
+    }
+
+    /**
      * 카카오 회원가입
      */
     const kakaoJoin = async (param) => {
         console.log("카카오 회원가입", param)
         return await useApi("post", "/kakao/signup", param);
     }
-
-
     return {
         getToken, // 현재 토큰 가져오기
         login,   // 로그인 함수
         logout,   // 로그아웃 함수
         kakaoLogin,
+        kakaoUpdate,
         kakaoJoin
+
+
     }
 });

@@ -52,3 +52,52 @@
 
           return null;
         }*/
+/*const getKakaoProfile = () => {
+  return new Promise((resolve, reject) => {
+    Kakao.API.request({
+      url: '/v2/user/me',
+      success: (response) => {
+        const profile = {
+          nickname: response.properties.nickname,
+          email: response.kakao_account.email,
+        };
+        resolve(profile);
+      },
+      fail: (error) => {
+        reject(error);
+      },
+    });
+  });
+};*/
+
+// URL에서 카카오 인증 코드 가져오기
+  /*  const authCode = router.currentRoute.value.query.code;
+    if (authCode) {
+      employee.value.snsKey = authCode;
+    }*/
+  // 세션 스토리지에서 카카오 리프레쉬 토큰 불러오기
+  /*  const kakaoRefreshToken = sessionStorage.getItem('KAKAO_REFRESH_TOKEN');
+    if (kakaoRefreshToken) {
+      employee.value.snsKey = kakaoRefreshToken;
+    }*/
+
+  // 카카오 프로필 로드
+  /**
+   * 세션 스토리지에서 id_token 가져오기
+   * jSON.parse = JSON 문자열의 구문을 분석
+   * atob = 인코딩된 문자열 데이터를 디코딩 (https://developer.mozilla.org/ko/docs/Web/API/atob)
+   * https://velopert.com/2389
+   */
+  const storedIdToken = sessionStorage.getItem('idToken');
+  if (storedIdToken) {
+    const idTokenPayload = JSON.parse(atob(storedIdToken.split('.')[1]));
+    // const idTokenPayload = JSON.parse((storedIdToken.split('.')[1]));
+    // const kakaoUserId = idTokenPayload.aud;
+    const kakaoUserId = idTokenPayload.sub;
+    employee.value.snsKey = kakaoUserId;
+  }
+
+
+
+
+

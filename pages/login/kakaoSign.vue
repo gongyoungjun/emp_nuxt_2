@@ -5,11 +5,11 @@
       <label>사원번호:</label>
       <input v-model="employee.empNo" type="text" readOnly><br>
       <label>사원이름:</label>
-      <input v-model="employee.empNm" type="text" required><br>
+      <input v-model="employee.empNm" type="text" readOnly><br>
       <label>비밀번호:</label>
       <input v-model="employee.empPwd" type="password" required><br>
       <label>전화번호:</label>
-      <input v-model="employee.empPhn" type="text"><br>
+      <input v-model="employee.empPhn" type="text" required><br>
       <label>이메일:</label>
       <input v-model="employee.empEml" type="email" readOnly><br> <!-- 이메일 수정 불가능 -->
       <label>사원상태 코드:</label>
@@ -28,16 +28,20 @@
   </div>
 </template>
 
+
 <script setup>
 import {ref, onMounted} from 'vue';
-import {useAuthStore} from '~/store/login';
-import {useRouter} from 'nuxt/app';
+import {useEmpStore} from '~/store/emp';
+import {useRouter, useRoute} from 'nuxt/app';
+import {useAuthStore} from "~/store/login";
 
-
+const loginStroe = useAuthStore();
 const router = useRouter();
-const loginStore = useAuthStore();
+const route = useRoute();
+const empStore = useEmpStore();
+
 const employee = ref({
-  empNo: null,
+  empNo: '',
   empNm: '',
   empPwd: '',
   empPhn: '',
@@ -51,54 +55,45 @@ const employee = ref({
   snsKey: '',
 });
 
-
 onMounted(async () => {
-  // 카카오 프로필 로드
-  /**
-   * 세션 스토리지에서 id_token 가져오기
-   * jSON.parse = JSON 문자열의 구문을 분석
-   * atob = 인코딩된 문자열 데이터를 디코딩 (https://developer.mozilla.org/ko/docs/Web/API/atob)
-   * https://velopert.com/2389
-   */
-  const storedIdToken = sessionStorage.getItem('idToken');
-  if (storedIdToken) {
-    const idTokenPayload = JSON.parse(atob(storedIdToken.split('.')[1]));
-    // const idTokenPayload = JSON.parse((storedIdToken.split('.')[1]));
-    // const kakaoUserId = idTokenPayload.aud;
-    const kakaoUserId = idTokenPayload.sub;
-    employee.value.snsKey = kakaoUserId;
+  console.log('Received query params:', route.query);
+  if (route.query.snsKey) {
+    try {
+      employee.value.snsKey = route.query.snsKey;
+
+      console.log('Requesting profile for snsKey:', employee.value.snsKey);
+
+      const profileResponse = await empStore.kakaoInfoUser({
+        snsKey: route.query.snsKey,
+      });
+
+      console.log('Profile response:', profileResponse);
+
+      if (profileResponse.data && profileResponse.data.value && profileResponse.data.value.list && profileResponse.data.value.list.length > 0) {
+        const profileData = profileResponse.data.value.list[0];
+        console.log('Received profile data:', profileData);
+
+        // 프로필 데이터에서 필요한 필드들을 가져와 변수에 저장
+        employee.value.empNm = profileData.empNm;
+        employee.value.empEml = profileData.empEml;
+        employee.value.empNo = profileData.empNo;
+        employee.value.empPhn = profileData.empPhn;
+
+      } else {
+        console.error('프로필 불러오기 실패:', profileResponse.error);
+        // 실패 시 사용자에게 알림 메시지 표시
+      }
+    } catch (error) {
+      console.error('프로필 불러오기 실패:',  error.message ? error.message : error);
+      // 실패 시 사용자에게 알림 메시지 표시
+    }
   }
-
-
-// URL에서 카카오 인증 코드 가져오기
-  /*  const authCode = router.currentRoute.value.query.code;
-    if (authCode) {
-      employee.value.snsKey = authCode;
-    }*/
-  // 세션 스토리지에서 카카오 리프레쉬 토큰 불러오기
-  /*  const kakaoRefreshToken = sessionStorage.getItem('KAKAO_REFRESH_TOKEN');
-    if (kakaoRefreshToken) {
-      employee.value.snsKey = kakaoRefreshToken;
-    }*/
 });
 
-/*const getKakaoProfile = () => {
-  return new Promise((resolve, reject) => {
-    Kakao.API.request({
-      url: '/v2/user/me',
-      success: (response) => {
-        const profile = {
-          nickname: response.properties.nickname,
-          email: response.kakao_account.email,
-        };
-        resolve(profile);
-      },
-      fail: (error) => {
-        reject(error);
-      },
-    });
-  });
-};*/
+
+
+
+
 
 const handleSubmit = async () => {
 
@@ -112,7 +107,16 @@ const handleSubmit = async () => {
   // employee.value.snsKey = sessionStorage.getItem('KAKAO_REFRESH_TOKEN');
 
   try {
-    const response = await loginStore.kakaoJoin(employee.value);
+    const response = await loginStroe.kakaoUpdate(employee.value);
+
+    // 백엔드 응답에서 JWT 토큰 추출
+    const token = response.data.value.token;
+
+    // JWT 토큰을 로컬 스토리지에 저장
+    localStorage.setItem('token', token);
+    console.log('로그인 후 토큰:', localStorage.getItem('token'));
+
+
     alert('회원가입이 완료되었습니다.');
     await router.push({path: '/main'});
   } catch (error) {

@@ -11,6 +11,11 @@ export const useEmpStore = defineStore('emp', () => {
         return await useApi("post", "/emp/detail", param);
     }
 
+    const kakaoInfoUser = async (param) => {
+        console.log("Sending snsKey:", param);
+        return await useApi("post", "/kakao/detail", param);
+    }
+
     const empUpdate = async (param) => {
         console.log("사원수정정보", param);
         return await useApi("put", "/emp/update", param);
@@ -33,6 +38,6 @@ export const useEmpStore = defineStore('emp', () => {
     }
 
     return {
-        empList, empUpdate, empInfoUser,empCommute,empEmail,empSnsKey
+        empList, empUpdate, empInfoUser, empCommute, empEmail, empSnsKey, kakaoInfoUser
     }
 });

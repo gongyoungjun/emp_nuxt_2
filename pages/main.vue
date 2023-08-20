@@ -24,6 +24,7 @@ export default {
     function logout() {
       // 토큰 제거
       localStorage.removeItem('token');
+      localStorage.removeItem('access_token');
       sessionStorage.removeItem('KAKAO_TOKEN'); // 카카오 토큰도 제거
       sessionStorage.removeItem('KAKAO_REFRESH_TOKEN');
       sessionStorage.removeItem('KAKAO_ID_TOKEN');

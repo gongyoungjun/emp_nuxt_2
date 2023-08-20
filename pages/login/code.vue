@@ -1,65 +1,137 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import { useRouter } from 'nuxt/app';
-import { useAuthStore } from '@/store/login';
-import { useEmpStore } from "~/store/emp";
+import {onMounted, ref} from 'vue';
+import {useRouter, useRoute} from 'nuxt/app';
+import {useAuthStore} from '@/store/login';
+import {useEmpStore} from "~/store/emp";
 
 const empStore = useEmpStore();
 const router = useRouter();
 const store = useAuthStore();
+const route = useRoute();
 
 const employee = ref({
+  empNo: '',
+  empNm: '',
+  empPwd: '',
+  empPhn: '',
+  empEml: '',
+  empStCd: '',
+  empRnkCd: '',
+  empHrDt: '',
+  empSlr: null,
+  empBrtDt: '',
+  snsCd: '',
   snsKey: '',
 });
 
+
 onMounted(async () => {
   const code = new URL(window.location.href).searchParams.get("code");
-  console.log('인가 코드 확인:', code);
   if (code) {
     try {
       const response = await store.kakaoLogin(code);
 
       if (response && response.data.value.access_token) {
-        console.log('토큰 받기 성공:', response);
-
         const accessToken = response.data.value.access_token;
 
-        // 세션 스토리지에 idToken과 KAKAO_TOKEN을 저장
-        const idToken = response.data.value.id_token;
-        sessionStorage.setItem('idToken', idToken);
+        // 세션 스토리지에 저장
+        sessionStorage.setItem('idToken', response.data.value.id_token);
         sessionStorage.setItem('KAKAO_TOKEN', accessToken);
 
         if (accessToken) {
           localStorage.setItem('access_token', accessToken);
-
-          // 프로필 정보 가져오기
+          //console.log('Access token:', accessToken); // 토큰 로깅
           const profile = await getKakaoProfile(accessToken);
-          console.log('카카오 프로필 정보:', profile);
+          console.log('Kakao profile:', profile);  // 프로필 로깅
+          const empSnskeyExists = await checkSnsKey(profile.id);
+          console.log('중복 여부?', empSnskeyExists);  // 중복 검사 결과 로깅
 
-          // 프로필 정보에서 id 값을 확인하여 라우팅 결정
-          const empSnskey = await checkSnsKey(profile.id);
 
-          if (empSnskey) {
-            if (profile.id === employee.value.snsKey) {
-              await router.push({ path: '/main' });
-            } else {
-              await router.push({ path: '/login/kakaoSign' });
-            }
+          if (empSnskeyExists) {
+            await router.push({path: '/main'});
           } else {
-            console.error('카카오 프로필에 id 값이 없습니다.');
-            await router.push({ path: '/login/kakaoSign' });
+            const signupSuccess = await performSignup(profile.id, profile);
+
+            if (signupSuccess) {
+              await router.push({path: '/login'});
+            } else {
+              console.log("Employee data before redirect:", employee.value);
+              await router.push({
+                path: '/login/kakaoSign',
+                query: {
+                  snsKey: employee.value.snsKey,
+                }
+              });
+            }
           }
-        } else {
-          console.error('토큰이 없습니다.');
-          await router.push({ path: '/login/kakaoSign' });
         }
       }
     } catch (error) {
       console.error('토큰 받기 중 에러:', error);
-      await router.push({ path: '/login/kakaoSign' });
+      await router.push({path: '/login/login'});
     }
   }
 });
+
+// 회원 가입 처리 함수
+async function performSignup(id, profile) {
+  const signupData = {
+    snsKey: id,
+    snsCd : '01',
+    empNm: profile.properties.nickname,
+    empEml: profile.kakao_account.email,
+  };
+
+  // employee ref 업데이트
+  employee.value.snsKey = id;
+  employee.value.snsCd = '01';
+  employee.value.empNm = profile.properties.nickname;
+  employee.value.empEml = profile.kakao_account.email;
+
+  const response = await store.kakaoJoin(signupData);
+  return response.success;
+}
+
+
+// 백엔드로 snsKey를 보내는 별도의 함수
+async function sendSnsKeyToBackend(snsKey) {
+  const response = await fetch("http://localhost:3000/api/kakao/detail", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ snsKey: snsKey })
+  });
+
+  return await response.json();
+}
+
+/*async function performSignup(id) {
+  try {
+    const accessToken = sessionStorage.getItem('KAKAO_TOKEN');
+    const profile = await getKakaoProfile(accessToken);
+
+    const signupData = {
+      snsKey: id,
+      snsCd: '01',
+      empNm: profile.properties.nickname,
+      empEml: profile.kakao_account.email,
+    };
+
+    // employee ref 업데이트
+    employee.value.snsKey = id;
+    employee.value.snsCd = '01';
+    employee.value.empNm = profile.properties.nickname;
+    employee.value.empEml = profile.kakao_account.email;
+
+    const response = await store.kakaoJoin(signupData);
+    return response.success;
+  } catch (error) {
+    console.error('회원 가입 처리 중 오류:', error);
+    return false;
+  }
+}*/
+
 
 // 카카오 프로필 정보 가져오는 함수
 async function getKakaoProfile(accessToken) {
@@ -69,19 +141,25 @@ async function getKakaoProfile(accessToken) {
       Authorization: `Bearer ${accessToken}`,
     },
   });
-
-  const data = await response.json();
-  return data;
+  return await response.json();
 }
 
 async function checkSnsKey(id) {
-  const response = await empStore.empSnsKey({snskey: id});
+  const requestData = {snsKey: id.toString()}; // 숫자를 문자열로 변환
+  console.log("Sending request data to server:", requestData); // 요청 데이터 로깅
 
+  const response = await empStore.empSnsKey(requestData);
   const data = response.data.value;
+  console.log("Extracted data:", data);
 
-  console.log("코드 - id:", data);
+  // 토큰을 받아서 로컬 스토리지나 세션 스토리지에 저장
+  if (response.data.value.token) {
+    localStorage.setItem('token', response.data.value.token);
+  }
 
-  return Array.isArray(data.value) && data.value.length > 0;
+  return data.list && data.list.length > 0;
 }
+
+
 
 </script>
