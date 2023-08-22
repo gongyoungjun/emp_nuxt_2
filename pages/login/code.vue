@@ -10,6 +10,7 @@ const store = useAuthStore();
 const route = useRoute();
 
 const employee = ref({
+
   empNo: '',
   empNm: '',
   empPwd: '',
@@ -23,7 +24,6 @@ const employee = ref({
   snsCd: '',
   snsKey: '',
 });
-
 
 onMounted(async () => {
   const code = new URL(window.location.href).searchParams.get("code");
@@ -92,7 +92,6 @@ async function performSignup(id, profile) {
   return response.success;
 }
 
-
 // 백엔드로 snsKey를 보내는 별도의 함수
 async function sendSnsKeyToBackend(snsKey) {
   const response = await fetch("http://localhost:3000/api/kakao/detail", {
@@ -106,33 +105,6 @@ async function sendSnsKeyToBackend(snsKey) {
   return await response.json();
 }
 
-/*async function performSignup(id) {
-  try {
-    const accessToken = sessionStorage.getItem('KAKAO_TOKEN');
-    const profile = await getKakaoProfile(accessToken);
-
-    const signupData = {
-      snsKey: id,
-      snsCd: '01',
-      empNm: profile.properties.nickname,
-      empEml: profile.kakao_account.email,
-    };
-
-    // employee ref 업데이트
-    employee.value.snsKey = id;
-    employee.value.snsCd = '01';
-    employee.value.empNm = profile.properties.nickname;
-    employee.value.empEml = profile.kakao_account.email;
-
-    const response = await store.kakaoJoin(signupData);
-    return response.success;
-  } catch (error) {
-    console.error('회원 가입 처리 중 오류:', error);
-    return false;
-  }
-}*/
-
-
 // 카카오 프로필 정보 가져오는 함수
 async function getKakaoProfile(accessToken) {
   const response = await fetch("https://kapi.kakao.com/v2/user/me", {
@@ -144,6 +116,11 @@ async function getKakaoProfile(accessToken) {
   return await response.json();
 }
 
+/**
+ * snsKey 확인
+ * @param id
+ * @returns {Promise<""|boolean>}
+ */
 async function checkSnsKey(id) {
   const requestData = {snsKey: id.toString()}; // 숫자를 문자열로 변환
   console.log("Sending request data to server:", requestData); // 요청 데이터 로깅

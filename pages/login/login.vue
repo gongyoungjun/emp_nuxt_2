@@ -12,11 +12,8 @@
       </div>
       <button type="submit">로그인</button>
     </form>
-    <button @click="kakaoLogin" class="kakaoLogin">카카오톡으로 로그인</button>
-
-
+<!--    <button @click="kakaoLogin" class="kakaoLogin">카카오톡으로 로그인</button>-->
     <br>
-<!--    <button @click="handleKakaoAuth" class="handleKakaoAuth">카카오톡으로 로그인</button>-->
         <a :href="KAKAO_AUTH_URL" class="kakaoAuthUrl">카카오톡으로 로그인</a>
     <p v-if="errorMessage">{{ errorMessage }}</p>
   </div>

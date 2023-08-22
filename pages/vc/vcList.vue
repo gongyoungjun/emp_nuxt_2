@@ -20,27 +20,24 @@
               <v-text-field v-model="model.empNm" variant="underlined" class="text-box" clearable
                             @keyup.enter="getVctnFromApi"></v-text-field>
             </v-col>
+            <v-row justify="start" style="margin-left: 110px">
+              <p class="text-center" style="margin-right: 40px; margin-top: 30px">
+                시작일
+              </p>
+              <v-col cols="3" md="3" style="margin-top: 16px">
+                <input type="date" v-model="model.strDt" @keyup.enter="getVctnFromApi">
+              </v-col>
+
+              <p class="text-center" style="margin-right: 32px; margin-top: 30px">
+                종료일
+              </p>
+              <v-col cols="3" md="3" style="margin-top: 16px">
+                <input type="date" v-model="model.endDt" @keyup.enter="getVctnFromApi">
+              </v-col>
+            </v-row>
             <v-btn variant="text" class="me-4" @click="getVctnFromApi" append-icon="mdi-magnify">
               검색
             </v-btn>
-          </v-row>
-
-          <v-row justify="start" style="margin-left: 110px">
-            <p class="text-center" style="margin-right: 40px; margin-top: 30px">
-              시작일
-            </p>
-            <v-col cols="3" md="3" style="margin-top: 16px">
-              <input type="date" v-model="model.strDt" @change="getVctnFromApi">
-            </v-col>
-
-            <p class="text-center" style="margin-right: 32px; margin-top: 30px">
-              종료일
-            </p>
-            <v-col cols="3" md="3" style="margin-top: 16px">
-              <input type="date" v-model="model.endDt" @change="getVctnFromApi">
-            </v-col>
-
-
           </v-row>
 
         </v-card-text>
@@ -63,12 +60,13 @@
               <td></td>
               <td> {{ item.columns.vctnNo }}</td>
               <td> {{ item.columns.empNm }}</td>
+              <td> {{ item.columns.empVctnTtl }}</td>
               <td> {{ item.columns.vctnKndNm }}</td>
               <td> {{ item.columns.vctnStrDt }}</td>
               <td> {{ item.columns.vctnEndDt }}</td>
-              <td> {{ vctnTotal(item.columns.vctnStrDt, item.columns.vctnEndDt) }} 일</td>
+              <td> {{ item.columns.vctnDayCnt }} 일</td>
               <td> {{ item.columns.vctnAplDtm }}</td>
-              <td> {{ item.columns.vctnStCd }}</td>
+              <td> {{ item.columns.vctnStNm }}</td>
             </tr>
           </template>
         </v-data-table-server>
@@ -99,13 +97,13 @@ let model = ref({
   },
     {title: 'No', key: 'vctnNo'},
     {title: '사원이름', key: 'empNm'},
+    {title: '총 휴가 일수', key: 'empVctnTtl'},
     {title: '휴가 종류', key: 'vctnKndNm'},
     {title: '휴가 시작일', key: 'vctnStrDt'},
     {title: '휴가 마지막일', key: 'vctnEndDt'},
-    {title: '총 휴가 일수', key: 'vctnTotalDays'},
+    {title: '신청 휴가 일수', key: 'vctnDayCnt'},
     {title: '휴가 신청일', key: 'vctnAplDtm'},
-    {title: '신청 상태', key: 'vctnStCd'},
-
+    {title: '신청 상태', key: 'vctnStNm'},
   ],
   vctnNo: '',
   empNm: '',
@@ -114,7 +112,7 @@ let model = ref({
   strDt: '',
   endDt: '',
   start: 0,
-  listSize: 4,
+  listSize: 10,
   indexPage: 0,
   indexPerPage: 0,
 })
@@ -153,7 +151,6 @@ function getVctnFromApi() {
 
     //getAction
     const {data} = await store.vctnList(searchParam)
-
     if (data.value.vacationList === null) {
       list = []
     } else {
@@ -166,16 +163,6 @@ function getVctnFromApi() {
     model.value.loading = false
 
   })
-}
-
-/**
- * 휴가 총 일수 계산
- */
-function vctnTotal(start, end) {
-  const startDate = new Date(start);
-  const endDate = new Date(end);
-  const difference = endDate - startDate;
-  return Math.ceil(difference / (1000 * 60 * 60 * 24)) + 1;
 }
 
 /**

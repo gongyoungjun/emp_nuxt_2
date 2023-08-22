@@ -2,6 +2,8 @@
   <div>
     <h1>카카오 추가 정보 입력</h1>
     <form @submit.prevent="handleSubmit">
+      <label>사원번호:</label>
+      <input v-model="employee.empNo" type="text" readOnly><br>
       <label>사원이름:</label>
       <input v-model="employee.empNm" type="text" readOnly><br>
       <label>비밀번호:</label>

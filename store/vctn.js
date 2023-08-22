@@ -9,7 +9,7 @@ export const useVctnStore = defineStore('vctn', () => {
     /**
      * 휴가신청
      */
-    const vctnApply = async (param) => {
+    const vctnInsert = async (param) => {
         console.log('신청',param)
         return await useApi("post", "/vctn/insert", param);
     }
@@ -29,6 +29,6 @@ export const useVctnStore = defineStore('vctn', () => {
 
 
     return {
-        vctnList, vctnApply, vctnDetail, vctnSt
+        vctnList, vctnInsert, vctnDetail, vctnSt
     }
 });

@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <!-- 카카오로 로그인 버튼 -->
-    <button @click="kakaoLogin" class="kakao-login-btn">카카오로 로그인</button>
+<!--    <button @click="kakaoLogin" class="kakao-login-btn">카카오로 로그인</button>-->
 
     <!-- 친구 목록 권한 요청 버튼 -->
-    <button @click="requestFriendsPermission" class="request-permission-btn">친구 목록 권한 요청</button>
+<!--    <button @click="requestFriendsPermission" class="request-permission-btn">친구 목록 권한 요청</button>-->
 
     <!-- 친구 목록 불러오기 버튼 -->
 <!--    <button @click="openFriends" class="open-friends&#45;&#45;btn">친구 목록 불러오기</button>-->
@@ -56,6 +56,8 @@ const getCommute = () => {
  * 호툴될 콜백 등록
  */
 onMounted(() => {
+
+
   // 지도 SDK 로드 및 친구 목록 불러오기 함수 호출
   if (!window.kakao || !window.kakao.maps) {
     const script = document.createElement('script'); // 문서의 요소 만듬
@@ -518,6 +520,8 @@ const kakaoLogin = () => {
 }
 
 .commute-btn:not(.checked-in) {
+  width: 50px;
+  height: 50px;
   background-color: #4CAF50;
   color: white;
 }
@@ -528,6 +532,8 @@ const kakaoLogin = () => {
 
 .commute-btn.checked-in {
   background-color: #f44336;
+  width: 50px;
+  height: 50px;
   color: white;
 }
 

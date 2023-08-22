@@ -26,18 +26,30 @@ export const useEmpStore = defineStore('emp', () => {
         console.log("사원출퇴근", param);
         return await useApi("post", "/emp/commute", param);
     }
+    const empCommuteList = async (param) => {
+        console.log("사원출퇴근 리스트", param);
+        return await useApi("post", "/emp/commute/list", param);
+    }
+
 
     const empEmail = async (param) => {
-        console.log("회원가입여부", param);
+        console.log("email - 회원가입여부", param);
         return await useApi("post", "/emp/emailCheck", param);
     }
 
     const empSnsKey = async (param) => {
-        console.log("회원가입여부", param);
+        console.log("snskey - 회원가입여부", param);
         return await useApi("post", "/kakao/snsKey", param);
     }
 
     return {
-        empList, empUpdate, empInfoUser, empCommute, empEmail, empSnsKey, kakaoInfoUser
+        empList
+        , empUpdate
+        , empInfoUser
+        , empCommute
+        , empEmail
+        , empSnsKey
+        , kakaoInfoUser
+        , empCommuteList
     }
 });

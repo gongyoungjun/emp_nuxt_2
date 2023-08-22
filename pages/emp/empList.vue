@@ -82,6 +82,7 @@
               <td> {{ item.columns.empEml }}</td>
               <td> {{ item.columns.empBrtDt }}</td>
               <td> {{ item.columns.empHrDt }}</td>
+              <td> {{ item.columns.empVctnTtl }}</td>
             </tr>
           </template>
 
@@ -124,7 +125,8 @@ let model = ref({
     {title: '이메일', key: 'empEml'},
     {title: '생년월일', key: 'empBrtDt'},
     {title: '입사일', key: 'empHrDt'},
-    {title: '재직상태', key: 'stNm'},
+/*    {title: '재직상태', key: 'stNm'},*/
+    {title: '총휴가일수', key: 'empVctnTtl'}
   ],
   empNo: '',
   empNm: '',

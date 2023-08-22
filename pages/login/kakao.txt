@@ -98,6 +98,29 @@
   }
 
 
+/*async function performSignup(id) {
+  try {
+    const accessToken = sessionStorage.getItem('KAKAO_TOKEN');
+    const profile = await getKakaoProfile(accessToken);
 
+    const signupData = {
+      snsKey: id,
+      snsCd: '01',
+      empNm: profile.properties.nickname,
+      empEml: profile.kakao_account.email,
+    };
 
+    // employee ref 업데이트
+    employee.value.snsKey = id;
+    employee.value.snsCd = '01';
+    employee.value.empNm = profile.properties.nickname;
+    employee.value.empEml = profile.kakao_account.email;
+
+    const response = await store.kakaoJoin(signupData);
+    return response.success;
+  } catch (error) {
+    console.error('회원 가입 처리 중 오류:', error);
+    return false;
+  }
+}*/
 

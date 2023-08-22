@@ -7,13 +7,13 @@
     이름:
     <input v-model="vctn.empNm" placeholder="이름" disabled /><br />
     휴가 종류:
-    <input v-model="vctn.vctnKndNm" placeholder="휴가 종류" disabled /><br />
-    잔여 휴가:
-    <input v-model="vctn.vctnRsdCnt" placeholder="잔여 휴가" disabled /><br />
+    <input v-model="vctn.vctnKndCd" placeholder="휴가 종류" disabled /><br />
     휴가 시작일:
     <input v-model="vctn.vctnStrDt" placeholder="휴가 시작일" disabled /><br />
     휴가 마지막일:
     <input v-model="vctn.vctnEndDt" placeholder="휴가 마지막일" disabled /><br />
+    연차 신청 일수:
+    <input v-model="vctn.vctnDayCnt" placeholder="휴가 마지막일" disabled /><br />
     휴가 신청일:
     <input v-model="vctn.vctnAplDtm" placeholder="휴가 신청일" disabled /><br />
     휴가 사유:
@@ -44,7 +44,7 @@ const vctn = ref({
   vctnNo: "",
   empNo: "",
   empNm: "",
-  vctnKndNm: "",
+  vctnKndCd: "",
   vctnRsdCnt: "",
   vctnStrDt: "",
   vctnEndDt: "",
