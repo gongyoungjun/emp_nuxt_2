@@ -1,6 +1,7 @@
 <template>
   <v-card>
-    <v-container class="container-style" style="font-size: 14px;">
+    <v-container class="main-container" style="font-size: 14px;">
+      <v-row class="header">
       <v-form @submit.prevent="getVctnFromApi">
         <v-card-text class="search-box" style="height: 200px;">
           <v-row justify="start" style="margin-left: 110px">
@@ -71,6 +72,7 @@
           </template>
         </v-data-table-server>
       </div>
+      </v-row>
     </v-container>
   </v-card>
 </template>

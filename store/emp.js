@@ -28,7 +28,7 @@ export const useEmpStore = defineStore('emp', () => {
     }
     const empCommuteList = async (param) => {
         console.log("사원출퇴근 리스트", param);
-        return await useApi("post", "/emp/commute/list", param);
+        return await useApi("post", "/emp/commuteList", param);
     }
 
 

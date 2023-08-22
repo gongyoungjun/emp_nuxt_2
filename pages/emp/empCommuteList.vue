@@ -1,42 +1,55 @@
 <template>
   <v-card>
-    <v-container class="container-style" style="font-size: 14px;">
+    <v-container class="container-style" style="font-size: 14px; width: 100%">
       <v-form @submit.prevent="getCmList">
-        <v-card-text class="search-box" style="height: 200px;">
+        <v-card-text class="search-box">
           <v-row justify="start" style="margin-left: 110px">
-            <!-- 휴가 번호 -->
-            <p class="text-center" style="margin-right: 40px; margin-top: 30px">휴가 번호</p>
+            <p class="text-center" style="margin-right: 40px; margin-top: 30px">
+              사원 번호
+            </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
-              <v-text-field v-model="commute.atndnNo" variant="underlined" class="text-box" clearable @keyup.enter="getCmList"></v-text-field>
+              <v-text-field v-model="model.empNo" variant="underlined" class="text-box" clearable
+                            @keyup.enter="getCmList"></v-text-field>
             </v-col>
-            <!-- 이름 -->
-            <p class="text-center" style="margin-right: 80px; margin-top: 30px">이름</p>
-            <v-col cols="3" md="3" style="margin-left: -39px; margin-top: -6px">
-              <v-text-field v-model="commute.empNm" variant="underlined" class="text-box" clearable @keyup.enter="getCmList"></v-text-field>
+
+            <p class="text-center" style="margin-right: 40px; margin-top: 30px">
+              이름
+            </p>
+            <v-col cols="3" md="3" style="margin-top: -6px">
+              <v-text-field v-model="model.empNm" variant="underlined" class="text-box" clearable
+                            @keyup.enter="getCmList"></v-text-field>
             </v-col>
-            <v-btn variant="text" class="me-4" @click="getCmList" append-icon="mdi-magnify">검색</v-btn>
+            <v-col md="2" style="margin-top: 8px; margin-right: 22px;"></v-col>
+            <v-col md="2" style="margin-left: 10px; margin-top: -86px">
+              <v-btn variant="text" class="me-4" @click="getCmList" append-icon="mdi-magnify">
+                검색
+              </v-btn>
+            </v-col>
           </v-row>
         </v-card-text>
       </v-form>
-
-      <v-data-table-server
-          :headers="commute.headers"
-          :items="list"
-          :items-per-page="commute.listSize"
-          :loading="commute.loading"
-          class="my-table-style"
-      >
-        <template v-slot:item="props">
-          <tr>
-            <td></td>
-            <td>{{ props.item.atndnNo }}</td>
-            <td>{{ props.item.empNo }}</td>
-            <td>{{ props.item.empNm}}</td>
-            <td>{{ props.item.address}}</td>
-            <td>{{ props.item.time}}</td>
-          </tr>
-        </template>
-      </v-data-table-server>
+      <v-spacer></v-spacer>
+      <div>
+        <v-data-table-server
+            :headers="model.headers"
+            :items="list"
+            :items-length="model.totalList"
+            :items-per-page="model.listSize"
+            :loading="model.loading"
+            class="my-table-style"
+            @update:options="options = $event"
+        >
+          <template #item="{ item }">
+            <tr v-if="!model.loading">
+              <td> {{ item.columns.empNo }}</td>
+              <td> {{ item.columns.empNm }}</td>
+              <td> {{ item.columns.time }}</td>
+              <td> {{ item.columns.address }}</td>
+              <td> {{ item.columns.workCd === '01' ? '출근' : '퇴근' }}</td>
+            </tr>
+          </template>
+        </v-data-table-server>
+      </div>
     </v-container>
   </v-card>
 </template>
@@ -48,30 +61,26 @@ import {VDataTableServer} from 'vuetify/labs/VDataTable'
 import {ref, watch} from "vue";
 import {useRouter} from "nuxt/app";
 
-const router = useRouter();
+const router = useRouter()
 const empStore = useEmpStore();
 
 
 let options = ref()
 let list = ref([])
 
-let commute = ref({
+let model = ref({
   totalList: 0,
   loading: true,
-  headers: [{
-    sortable: false,
-  },
-    {title: 'No', key: 'atndnNo'},
-    {title: '사원 번호', key: 'empNo'},
-    {title: '사원 이름', key: 'empNm'},
-    {title: '현재 위치', key: 'address'},
-    {title: '출퇴근 시간', key: 'time'},
-    {title: '출퇴근', key: 'workCd'},
+  headers: [
+    {title: '사원번호', key: 'empNo'},
+    {title: '사원이름', key: 'empNm'},
+    {title: '시간', key: 'time'},
+    {title: '주소', key: 'address'},
+    /*  {title: '위치(위도,경도)', key: 'geoLoc'},*/
+    {title: '상태', key: 'workCd'}
   ],
+  empNo: '',
   empNm: '',
-  workCd:'',
-  strDt: '',
-  endDt: '',
   start: 0,
   listSize: 10,
   indexPage: 0,
@@ -92,21 +101,19 @@ watch(
  * 출퇴근 목록 가져옴
  */
 function getCmList() {
-  commute.value.loading = true
+  model.value.loading = true
   pagingSet().then(async pageData => {
     let listSize
     if (pageData.itemsPerPage === -1) {
-      listSize = commute.value.totalList
+      listSize = model.value.totalList
     } else {
       listSize = pageData.itemsPerPage
     }
 
     //검색
     let searchParam = {
-      workCd: commute.value.workCd,
-      empNm: commute.value.empNm,
-      strDt: commute.value.strDt,
-      endDt: commute.value.endDt,
+      empNo: model.value.empNo,
+      empNm: model.value.empNm,
       page: pageData.page,
       listSize: listSize,
     }
@@ -120,11 +127,11 @@ function getCmList() {
     }
 
 
-    commute.value.totalList = data.value.total
-    commute.value.viewCount = listSize
-    commute.value.loading = false
+    model.value.totalList = data.value.total
+    model.value.viewCount = listSize
+    model.value.loading = false
 
-    console.log("페이징 데이터:", commute.value);
+    console.log("페이징 데이터:", model.value);
 
   })
 }
@@ -137,8 +144,8 @@ function pagingSet() {
     const {page, itemsPerPage} = options.value
 
     const start = (page - 1) * itemsPerPage
-    commute.value.indexPage = page
-    commute.value.indexPerPage = itemsPerPage
+    model.value.indexPage = page
+    model.value.indexPerPage = itemsPerPage
 
     resolve({
       start,

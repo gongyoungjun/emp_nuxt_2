@@ -34,6 +34,8 @@ import {useEmpStore} from "~/store/emp";
 const router = useRouter();
 const store = useEmpStore();
 
+let list = ref([]);
+
 const coords = reactive({
   latitude: null,
   longitude: null

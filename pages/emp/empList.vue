@@ -1,27 +1,15 @@
 <template>
-  <v-card>
-    <v-container
-        class="container-style"
-        style="font-size: 14px; width: 100%"
-    >
-      <v-form
-          @submit.prevent="getEmpFromApi"
-      >
-        <v-card-text
-            class="search-box"
-        >
+  <v-card class="pa-16">
+    <v-container class="main-container" style="font-size: 14px; width: 100%">
+      <v-form @submit.prevent="getEmpFromApi">
+        <v-card-text class="search-box">
           <v-row justify="start" style="margin-left: 110px">
             <p class="text-center" style="margin-right: 40px; margin-top: 30px">
               사원 번호
             </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
-              <v-text-field
-                  v-model="model.empNo"
-                  variant="underlined"
-                  class="text-box"
-                  clearable
-                  @keyup.enter="getEmpFromApi"
-              ></v-text-field>
+              <v-text-field v-model="model.empNo" variant="underlined" class="text-box" clearable
+                            @keyup.enter="getEmpFromApi"></v-text-field>
             </v-col>
             <p class="text-center" style="margin-right: 40px; margin-top: 30px">
               이름
@@ -36,30 +24,13 @@
               ></v-text-field>
             </v-col>
           </v-row>
-
-
-            <p class="text-center">
-              -
-            </p>
-            <v-col
-                md="2"
-                style="margin-top: 8px; margin-right: 22px;"
-            >
-            </v-col>
-
-            <v-col
-                md="2"
-                style="margin-left: 10px; margin-top: -86px"
-            >
-              <v-btn
-                  variant="text"
-                  class="me-4"
-                  @click="getEmpFromApi"
-                  append-icon="mdi-magnify"
-              >
-                검색
-              </v-btn>
-            </v-col>
+          <p class="text-center"></p>
+          <v-col md="2" style="margin-top: 8px; margin-right: 22px;"></v-col>
+          <v-col md="2" style="margin-left: 10px; margin-top: -86px">
+            <v-btn variant="text" class="me-4" @click="getEmpFromApi" append-icon="mdi-magnify">
+              검색
+            </v-btn>
+          </v-col>
         </v-card-text>
       </v-form>
       <v-spacer></v-spacer>
@@ -96,14 +67,14 @@
 <script setup>
 import {useEmpStore} from "~/store/emp";
 
-definePageMeta({
+/*definePageMeta({
   layout: "admin"
-})
+})*/
 
 import {VDataTableServer} from 'vuetify/labs/VDataTable';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {ref, watch} from "vue";
-import { useRouter } from 'nuxt/app';
+import {useRouter} from 'nuxt/app';
 
 const router = useRouter()
 const store = useEmpStore()
@@ -125,7 +96,7 @@ let model = ref({
     {title: '이메일', key: 'empEml'},
     {title: '생년월일', key: 'empBrtDt'},
     {title: '입사일', key: 'empHrDt'},
-/*    {title: '재직상태', key: 'stNm'},*/
+    /*    {title: '재직상태', key: 'stNm'},*/
     {title: '총휴가일수', key: 'empVctnTtl'}
   ],
   empNo: '',
@@ -174,7 +145,6 @@ function getEmpFromApi() {
 }
 
 
-
 function pagingSet() {
   return new Promise((resolve) => {
     const {page, itemsPerPage} = options.value
@@ -210,10 +180,9 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .container-style {
-  margin-top: 15px
+  margin-top: 15px;
 }
 
 .text-center {
@@ -225,6 +194,7 @@ export default {
   border-radius: 30px;
   font-size: 14px;
   cursor: pointer;
+  margin: 20px 0; /* 상하 간격 추가 */
 }
 
 .me-4 {
@@ -251,6 +221,7 @@ export default {
   border-radius: 30px;
   border: 1px solid #ccc;
   margin-bottom: 12px;
+  padding: 20px 0; /* 위 아래 간격 추가 */
 }
 
 .red-color {
