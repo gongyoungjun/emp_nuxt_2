@@ -22,20 +22,18 @@
       <v-data-table-server
           :headers="commute.headers"
           :items="list"
-          :items-length="commute.totalList"
           :items-per-page="commute.listSize"
           :loading="commute.loading"
           class="my-table-style"
-          @update:options="options = $event"
       >
         <template v-slot:item="props">
           <tr>
             <td></td>
             <td>{{ props.item.atndnNo }}</td>
             <td>{{ props.item.empNo }}</td>
-            <td>{{ props.item.empNm }}</td>
-            <td>{{ props.item.address }}</td>
-            <td>{{ props.item.time }}</td>
+            <td>{{ props.item.empNm}}</td>
+            <td>{{ props.item.address}}</td>
+            <td>{{ props.item.time}}</td>
           </tr>
         </template>
       </v-data-table-server>
@@ -68,18 +66,14 @@ let commute = ref({
     {title: '사원 이름', key: 'empNm'},
     {title: '현재 위치', key: 'address'},
     {title: '출퇴근 시간', key: 'time'},
-    {title: '출퇴근', key: 'workcd'},
+    {title: '출퇴근', key: 'workCd'},
   ],
-  atndnNo: '',
-  empNo: '',
   empNm: '',
-  address: '',
-  geoLoc: '',
-
+  workCd:'',
   strDt: '',
   endDt: '',
   start: 0,
-  listSize: 4,
+  listSize: 10,
   indexPage: 0,
   indexPerPage: 0,
 })
@@ -109,7 +103,7 @@ function getCmList() {
 
     //검색
     let searchParam = {
-      workcd: commute.value.workcd,
+      workCd: commute.value.workCd,
       empNm: commute.value.empNm,
       strDt: commute.value.strDt,
       endDt: commute.value.endDt,
@@ -118,7 +112,7 @@ function getCmList() {
     }
 
     const {data} = await empStore.empCommuteList(searchParam)
-    console.log("ㅇㅇ", data.value.empCommuteDTO);
+    console.log("API 응답:", data);
     if (data.value.empCommuteDTO === null) {
       list = []
     } else {
@@ -129,6 +123,8 @@ function getCmList() {
     commute.value.totalList = data.value.total
     commute.value.viewCount = listSize
     commute.value.loading = false
+
+    console.log("페이징 데이터:", commute.value);
 
   })
 }

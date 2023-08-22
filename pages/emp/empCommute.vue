@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <!-- 카카오로 로그인 버튼 -->
-<!--    <button @click="kakaoLogin" class="kakao-login-btn">카카오로 로그인</button>-->
+    <button @click="kakaoLogin" class="kakao-login-btn">카카오로 로그인</button>
 
     <!-- 친구 목록 권한 요청 버튼 -->
 <!--    <button @click="requestFriendsPermission" class="request-permission-btn">친구 목록 권한 요청</button>-->
