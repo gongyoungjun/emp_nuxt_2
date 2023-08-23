@@ -163,9 +163,7 @@ function getVctnFromApi() {
       list = data.value.vacationList
     }
 
-
     model.value.totalList = data.value.total
-    model.value.viewCount = listSize
     model.value.loading = false
 
   })

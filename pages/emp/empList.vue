@@ -103,7 +103,7 @@ let model = ref({
   empNm: '',
   rnkKeyword: '',
   start: 0,
-  listSize: 4,
+  listSize: 10,
   indexPage: 0,
   indexPerPage: 0,
 })
@@ -139,7 +139,7 @@ function getEmpFromApi() {
     } else {
       list = data.value.list
     }
-    model.value.totalList = data.value.listSize
+    model.value.totalList = data.value.total
     model.value.loading = false
   })
 }

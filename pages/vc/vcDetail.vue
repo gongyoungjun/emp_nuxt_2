@@ -63,8 +63,9 @@ async function getVctnInfo() {
   const vctnNo = router.currentRoute.value.query.vctnNo;
   if (vctnNo) {
     const response = await store.vctnDetail({ vctnNo: vctnNo });
-    if (response && response.data && response.data.value && response.data.value.vacationList) {
-      vctn.value = response.data.value.vacationList[0]; // 휴가 정보
+
+    if (response && response.data && response.data.value) {
+      vctn.value = response.data.value.data; // 휴가 정보
     } else {
       console.error("오류: 휴가 정보를 가져올 수 없습니다.");
     }

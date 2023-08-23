@@ -49,8 +49,8 @@ async function fetchEmpData() {
   if (empNo) {
 
     const response = await store.empInfoUser({empNo: empNo});
-    if (response && response.data && response.data.value && response.data.value.list) {
-      empData.value = response.data.value.list[0]; // 사원 정보
+    if (response && response.data && response.data.value) {
+      empData.value = response.data.value.data; // 사원 정보
     } else {
       console.error("Error: 사원 정보를 가져올 수 없습니다.");
     }

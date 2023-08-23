@@ -126,7 +126,6 @@ function getCmList() {
 
 
     model.value.totalList = data.value.total
-    model.value.viewCount = listSize
     model.value.loading = false
 
     console.log("페이징 데이터:", model.value);
