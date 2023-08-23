@@ -4,9 +4,7 @@
       <v-col>
         <h1 class="title">메인 페이지</h1>
       </v-col>
-<!--      <v-col class="d-flex justify-end">
-        <v-btn color="error" @click="logout">로그아웃</v-btn>
-      </v-col>-->
+
     </v-row>
 
     <v-list class="menu-list">
@@ -33,26 +31,22 @@ const links = [
   {text: '출퇴근 목록', path: '/emp/empCommuteList'},
 ];
 
+/*v-if="link.condition === 'all'
+|| (isAdmin && link.condition === 'admin')
+|| (!isAdmin && link.condition === 'user')">*/
+/*const links = [
+  {text: '직원 목록', path: '/emp/empList', condition: 'admin'},
+  {text: '휴가 신청', path: '/vc/vcCreate', condition: 'user'},
+  {text: '휴가 목록', path: '/vc/vcList', condition: 'user'},
+  {text: '출퇴근', path: '/emp/empCommute', condition: 'user'},
+  {text: '출퇴근 목록', path: '/emp/empCommuteList', condition: 'user'},
+];
+
+const isAdmin = ref(false);*/
+
 const router = useRouter();
 
-/*function logout() {
-  // 토큰 제거
-  localStorage.removeItem('token');
-  localStorage.removeItem('access_token');
-  sessionStorage.removeItem('KAKAO_TOKEN'); // 카카오 토큰도 제거
-  sessionStorage.removeItem('KAKAO_REFRESH_TOKEN');
-  sessionStorage.removeItem('KAKAO_ID_TOKEN');
-  sessionStorage.removeItem('idToken');
-  // 카카오 로그아웃 처리
-  if (window.Kakao && Kakao.Auth.getAccessToken()) {
-    Kakao.Auth.logout(() => {
-      console.log('카카오 로그아웃 완료');
-    });
-  }
 
-  // 기본 주소
-  router.push('/');
-}*/
 
 onMounted(async () => {
   // 카카오 SDK 로드 확인

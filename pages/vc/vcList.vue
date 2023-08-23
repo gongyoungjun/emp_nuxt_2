@@ -2,76 +2,79 @@
   <v-card>
     <v-container class="main-container" style="font-size: 14px;">
       <v-row class="header">
-      <v-form @submit.prevent="getVctnFromApi">
-        <v-card-text class="search-box" style="height: 200px;">
-          <v-row justify="start" style="margin-left: 110px">
-            <!-- 휴가 번호 -->
-            <p class="text-center" style="margin-right: 40px; margin-top: 30px">
-              휴가 번호
-            </p>
-            <v-col cols="3" md="3" style="margin-top: -6px">
-              <v-text-field v-model="model.vctnNo" variant="underlined" class="text-box" clearable
-                            @keyup.enter="getVctnFromApi"></v-text-field>
-            </v-col>
-            <!-- 이름 -->
-            <p class="text-center" style="margin-right: 80px; margin-top: 30px">
-              이름
-            </p>
-            <v-col cols="3" md="3" style="margin-left: -39px; margin-top: -6px">
-              <v-text-field v-model="model.empNm" variant="underlined" class="text-box" clearable
-                            @keyup.enter="getVctnFromApi"></v-text-field>
-            </v-col>
+        <v-form class="custom-form" @submit.prevent="getVctnFromApi">
+          <v-card-text class="search-box" style="height: 200px;">
             <v-row justify="start" style="margin-left: 110px">
+              <!-- 휴가 번호 -->
               <p class="text-center" style="margin-right: 40px; margin-top: 30px">
-                시작일
+                휴가 번호
               </p>
-              <v-col cols="3" md="3" style="margin-top: 16px">
-                <input type="date" v-model="model.strDt" @keyup.enter="getVctnFromApi">
+              <v-col cols="3" md="3" style="margin-top: -6px">
+                <v-text-field v-model="model.vctnNo" variant="underlined" class="text-box" clearable
+                              @keyup.enter="getVctnFromApi"></v-text-field>
               </v-col>
+              <!-- 이름 -->
+              <p class="text-center" style="margin-right: 80px; margin-top: 30px">
+                이름
+              </p>
+              <v-col cols="3" md="3" style="margin-left: -39px; margin-top: -6px">
+                <v-text-field v-model="model.empNm" variant="underlined" class="text-box" clearable
+                              @keyup.enter="getVctnFromApi"></v-text-field>
+              </v-col>
+              <v-btn variant="text" class="me-4" @click="getVctnFromApi" append-icon="mdi-magnify">
+                검색
+              </v-btn>
 
-              <p class="text-center" style="margin-right: 32px; margin-top: 30px">
-                종료일
-              </p>
-              <v-col cols="3" md="3" style="margin-top: 16px">
-                <input type="date" v-model="model.endDt" @keyup.enter="getVctnFromApi">
-              </v-col>
+
+              <v-row justify="start" style="margin-left: 80px">
+                <p class="text-center" style="margin-right: 40px; margin-top: 30px">
+                  시작일
+                </p>
+                <v-col cols="3" md="3" style="margin-top: 16px">
+                  <input type="date" v-model="model.strDt" @keyup.enter="getVctnFromApi">
+                </v-col>
+
+                <p class="text-center" style="margin-right: 32px; margin-top: 30px">
+                  종료일
+                </p>
+                <v-col cols="3" md="3" style="margin-top: 16px">
+                  <input type="date" v-model="model.endDt" @keyup.enter="getVctnFromApi">
+                </v-col>
+              </v-row>
+
             </v-row>
-            <v-btn variant="text" class="me-4" @click="getVctnFromApi" append-icon="mdi-magnify">
-              검색
-            </v-btn>
-          </v-row>
 
-        </v-card-text>
-      </v-form>
-      <v-spacer></v-spacer>
+          </v-card-text>
+        </v-form>
+        <v-spacer></v-spacer>
 
-      <div>
-        <v-data-table-server
-            :headers="model.headers"
-            :items="list"
-            :items-length="model.totalList"
-            :items-per-page="model.listSize"
-            :loading="model.loading"
-            class="my-table-style"
-            @update:options="options = $event"
-        >
+        <div>
+          <v-data-table-server
+              :headers="model.headers"
+              :items="list"
+              :items-length="model.totalList"
+              :items-per-page="model.listSize"
+              :loading="model.loading"
+              class="my-table-style"
+              @update:options="options = $event"
+          >
 
-          <template #item="{ item, index }">
-            <tr @click="showVctn(item.columns.vctnNo)" v-if="!model.loading">
-              <td></td>
-              <td> {{ item.columns.vctnNo }}</td>
-              <td> {{ item.columns.empNm }}</td>
-              <td> {{ item.columns.empVctnTtl }}</td>
-              <td> {{ item.columns.vctnKndNm }}</td>
-              <td> {{ item.columns.vctnStrDt }}</td>
-              <td> {{ item.columns.vctnEndDt }}</td>
-              <td> {{ item.columns.vctnDayCnt }} 일</td>
-              <td> {{ item.columns.vctnAplDtm }}</td>
-              <td> {{ item.columns.vctnStNm }}</td>
-            </tr>
-          </template>
-        </v-data-table-server>
-      </div>
+            <template #item="{ item, index }">
+              <tr @click="showVctn(item.columns.vctnNo)" v-if="!model.loading">
+                <td></td>
+                <td> {{ item.columns.vctnNo }}</td>
+                <td> {{ item.columns.empNm }}</td>
+                <td> {{ item.columns.empVctnTtl }}</td>
+                <td> {{ item.columns.vctnKndNm }}</td>
+                <td> {{ item.columns.vctnStrDt }}</td>
+                <td> {{ item.columns.vctnEndDt }}</td>
+                <td> {{ item.columns.vctnDayCnt }} 일</td>
+                <td> {{ item.columns.vctnAplDtm }}</td>
+                <td> {{ item.columns.vctnStNm }}</td>
+              </tr>
+            </template>
+          </v-data-table-server>
+        </div>
       </v-row>
     </v-container>
   </v-card>
@@ -198,12 +201,22 @@ function showVctn(vctnNo) {
   })
 }
 
-
 </script>
 
 <style scoped>
-.container-style {
-  margin-top: 15px
+
+.main-container {
+  padding-top: 50px; /* 상단 여유 공간 */
+  padding-bottom: 20px; /* 하단 여유 공간 */
+}
+
+.search-box {
+  height: 160px;
+}
+
+/* v-form의 크기 조정 */
+.custom-form {
+  width: 100%;
 }
 
 .my-table-style {
@@ -212,6 +225,7 @@ function showVctn(vctnNo) {
   width: 100%;
   font-size: 14px;
   cursor: pointer;
+  margin: auto;
 }
 
 .me-4 {
@@ -228,17 +242,6 @@ function showVctn(vctnNo) {
   border-radius: 30px;
   border: 1px solid #ccc;
   margin-bottom: 12px;
-}
-
-.select-box {
-  margin-left: 18px;
-  width: 100px;
-}
-
-.date-box {
-  width: 25%;
-  margin-right: 30px;
-  margin-top: 20px;
 }
 
 .text-center {

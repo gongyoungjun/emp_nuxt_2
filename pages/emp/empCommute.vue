@@ -1,29 +1,22 @@
 <template>
-  <div class="container">
-    <!-- 카카오로 로그인 버튼 -->
-    <button @click="kakaoLogin" class="kakao-login-btn">카카오로 로그인</button>
+  <v-container class="map-container">
+    <div class="map-buttons">
+      <v-btn @click="getCommute" class="commute-btn" :color="isCommute ? 'red' : 'green'" outlined>
+        {{ isCommute ? "퇴근" : "출근" }}
+      </v-btn>
+      <div id="map"></div>
+      <v-btn @click="sendData" class="send-btn" color="blue" outlined>정보 전송하기</v-btn>
+    </div>
+  </v-container>
 
-    <!-- 친구 목록 권한 요청 버튼 -->
-<!--    <button @click="requestFriendsPermission" class="request-permission-btn">친구 목록 권한 요청</button>-->
 
-    <!-- 친구 목록 불러오기 버튼 -->
-<!--    <button @click="openFriends" class="open-friends&#45;&#45;btn">친구 목록 불러오기</button>-->
+  <!-- 카카오로 로그인 버튼 -->
+  <!--    <button @click="kakaoLogin" class="kakao-login-btn">카카오로 로그인</button>-->
+  <!-- 현재 위치 가져오기 버튼 -->
+  <!--    <button @click="getCurrentPosition" class="location-btn">현재 위치 가져오기</button>
+      <p v-if="coords.latitude && coords.longitude" class="coords-text">좌표: {{ coords.latitude }}, {{ coords.longitude }}</p>
+      <p v-if="address" class="address-text">주소: {{ address }}</p>-->
 
-    <!-- 출근/퇴근 버튼 -->
-    <button @click="getCommute" class="commute-btn" :class="{'checked-in': isCommute}">
-      {{ isCommute ? "퇴근" : "출근" }}
-    </button>
-    <br>
-
-    <!-- 현재 위치 가져오기 버튼 -->
-    <button @click="getCurrentPosition" class="location-btn">현재 위치 가져오기</button>
-    <p v-if="coords.latitude && coords.longitude" class="coords-text">좌표: {{ coords.latitude }}, {{ coords.longitude }}</p>
-    <p v-if="address" class="address-text">주소: {{ address }}</p>
-
-    <!-- 정보 전송하기 버튼 -->
-    <button @click="sendData" class="send-btn">정보 전송하기</button>
-  </div>
-  <div id="map"></div>
 </template>
 
 <script setup>
@@ -44,8 +37,6 @@ const coords = reactive({
 const address = ref('');
 const isCommute = ref(false); // 출퇴근 상태를 나타내는 변수
 
-const friendsList = ref([]); // 친구 목록 저장
-const selectedFriend = ref(''); // 친구 고유 아이디(uuid)
 
 //출퇴근 버튼
 const getCommute = () => {
@@ -59,6 +50,7 @@ const getCommute = () => {
  */
 onMounted(() => {
 
+  getCurrentPosition();
 
   // 지도 SDK 로드 및 친구 목록 불러오기 함수 호출
   if (!window.kakao || !window.kakao.maps) {
@@ -79,7 +71,6 @@ onMounted(() => {
     kakaoLoginScript.src = "//developers.kakao.com/sdk/js/kakao.js";
     kakaoLoginScript.addEventListener('load', () => {
       Kakao.init('7ab35a2ef3b2ad6d27aa8a80bfc99a3a');  // 카카오 앱 키
-      //loadFriendsList(); // 친구 목록 불러오기 함수 호출
     });
     document.head.appendChild(kakaoLoginScript);
   }
@@ -157,7 +148,7 @@ async function sendData() {
   const requestBody = {
     geoLoc: pointFormat,
     address: address.value,
-    workcd: isCommute.value ? "02" : "01"
+    workCd: isCommute.value ? "02" : "01"
   };
   try {
     const response = await store.empCommute(requestBody);
@@ -170,8 +161,8 @@ async function sendData() {
       // API 호출이 성공적으로 처리된 경우
       console.log("출퇴근 정보가 업데이트되었습니다.");
 
-      const message = `영준님이 ${isCommute.value ? "퇴근" : "출근"}하셨습니다. 위치: ${address.value}`;
-      sendKakaoMessage(message);
+/*      const message = `영준님이 ${isCommute.value ? "퇴근" : "출근"}하셨습니다. 위치: ${address.value}`;
+      sendKakaoMessage(message);*/
     } else {
       // API 호출이 실패한 경우
       console.error("API 호출 실패:", response.status._rawValue);
@@ -181,21 +172,10 @@ async function sendData() {
   }
 }
 
-
-/**
- * 사전 설정
- * 플랫폼 등록 o
- * 카카오 로그인 활성화 o
- * 동의항목 o
- * 카카오 로그인 o
- * 사용자 동의 o
- */
-
 /**
  * 카카오 메세지
  * 전송
  */
-
 
 const sendKakaoMessage = async (messageText) => {
   const KAKAO_TOKEN = sessionStorage.getItem('KAKAO_TOKEN');
@@ -244,146 +224,6 @@ const sendKakaoMessage = async (messageText) => {
   }
 };
 
-
-
-let friends = null; // friends 변수 정의
-
-/**
- * 친구 목록
- * 팝업으로 열기
- */
-const openFriends = () => {
-  const Width = 600;
-  const Height = 400;
-  const left = (window.innerWidth - Width) / 2;
-  const top = (window.innerHeight - Height) / 2;
-
-  friends = window.open(
-      'about:blank',
-      '친구 목록',
-      `width=${Width},height=${Height},left=${left},top=${top}`
-  );
-
-  friends.document.write('<h1>친구 목록 불러오는 중...</h1>');
-  import('vue').then(({nextTick}) => {
-    nextTick(() => {
-      loadFriendsListIn(friends);
-    });
-  });
-};
-
-/**
- * 친구 목록
- * 팝업으로 불러오기
- */
-const loadFriendsListIn = async (Window) => {
-  try {
-    const response = await fetch('https://kapi.kakao.com/v1/api/talk/friends?limit=100', {
-      headers: {
-        'Authorization': `Bearer ${sessionStorage.getItem('KAKAO_TOKEN')}`
-      },
-      mode: 'cors'
-    });
-    const data = await response.json();
-    console.log('친구 목록 API 응답:', data); // 추가된 부분
-
-    Window.document.write('<h1>친구 목록</h1>');
-
-    if (data && data.elements && data.elements.length > 0) {
-      data.elements.forEach((friend) => {
-        Window.document.write(`<p>${friend.nickname} <button onclick="selectFriend('${friend.uuid}')">선택</button></p>`);
-      });
-    } else {
-      Window.document.write('<p>친구 목록이 없습니다.</p>');
-    }
-  } catch (error) {
-    console.error('친구 목록 불러오기 에러:', error);
-    Window.document.write('<h1>친구 목록 불러오기 에러</h1>');
-  }
-};
-
-/**
- * 선택한 친구
- * 처리 함수
- */
-const loadFriendsList = async () => {
-  console.log("Fetching friends list...");
-
-  try {
-    const response = await fetch('https://kapi.kakao.com/v1/api/talk/friends?limit=100', {
-      headers: {
-        // 'Authorization': `Bearer 3vdqx6DTa1Mdr8As8YPf74vdKIvXcuVssTUfSGfzCioljgAAAYn8WCKp`
-        'Authorization': `Bearer ${sessionStorage.getItem('KAKAO_TOKEN')}`
-      },
-      mode: 'cors'
-    });
-    const data = await response.json();
-
-    if (data && data.elements && data.elements.length > 0) {
-      friendsList.value = data.elements;
-      console.log("Friends list fetched:", friendsList.value);
-    }
-  } catch (error) {
-    console.error('친구 목록 불러오기 에러:', error);
-  }
-};
-
-/**
- * 친구목록 선택
- */
-const selectFriend = (uuid) => {
-  friends.value.close();
-  selectedFriend.value = uuid;
-};
-
-/**
- * 친구목록 접근권한
- * 처리 함수
- */
-const requestFriendsPermission = () => {
-  if (!window.Kakao) {
-    console.error('Kakao SDK가 로드되지 않았습니다.');
-    return;
-  }
-
-  Kakao.Auth.login({
-    scope: 'friends',
-    success: () => {
-      alert('친구 목록 권한을 획득하였습니다.');
-    },
-    fail: (error) => {
-      console.error('친구 목록 권한 요청 실패:', error);
-    }
-  });
-};
-
-/* const sendToSpecificFriend = (friendId, message) => {
-  if (!window.Kakao) {
-    console.error('Kakao SDK가 로드되지 않았습니다.');
-    return;
-  }
-
-  Kakao.API.request({
-    url: '/v1/api/talk/friends/message/default/send',
-    data: {
-      receiver_uuids: [friendId],
-      template_object: {
-        object_type: 'text',
-        text: message,
-      },
-    },
-    success: (response) => {
-      console.log('카카오 메시지 전송 성공:', response);
-      alert('메시지를 성공적으로 보냈습니다.');
-    },
-    fail: (error) => {
-      console.error('카카오 메시지 전송 실패:', error);
-      alert('메시지 전송에 실패하였습니다.');
-    },
-  });
-};*/
-
-
 /**
  * 카카오 로그인 함수 정의
  */
@@ -407,140 +247,39 @@ const kakaoLogin = () => {
 
 </script>
 
-
 <style scoped>
+/*css는 //사용X */
 
-/* 카카오 로그인 버튼 스타일 */
-.kakao-login-btn {
-  padding: 10px 20px;
-  font-size: 18px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  background-color: #ffcd00;
-  cursor: pointer;
-  margin-bottom: 20px;
-  transition: background-color 0.3s;
-}
-
-.kakao-login-btn:hover {
-  background-color: #ffab00;
-}
-
-/* 친구 목록 권한 요청 버튼 스타일 */
-.request-permission-btn {
-  padding: 10px 20px;
-  font-size: 18px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  background-color: #ff6b00;
-  cursor: pointer;
-  margin-bottom: 20px;
-  transition: background-color 0.3s;
-}
-
-.request-permission-btn:hover {
-  background-color: #ff5300;
-}
-
-/* 친구 목록 불러오기 버튼 스타일 */
-.open-friends--btn {
-  padding: 10px 20px;
-  font-size: 18px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  background-color: #3c1e1e;
-  cursor: pointer;
-  margin-bottom: 20px;
-  transition: background-color 0.3s;
-}
-
-.open-friends--btn:hover {
-  background-color: #271414;
-}
-
-
-
-.container {
+.map-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  margin: 50px auto;
-  background-color: #f9f9f9;
-}
-
-.location-btn {
-  padding: 10px 20px;
-  font-size: 18px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  background-color: #a8a8a8;
-  cursor: pointer;
-  margin-bottom: 20px;
-  transition: background-color 0.3s;
+  align-items: center; /* 중앙 정렬 (수평 방향) */
+  justify-content: center; /* 중앙 정렬 (수직 방향) */
+  height: 90vh; /* 높이 설정 */
 }
 
 .send-btn {
+  display: block; /* 블록 요소로 설정 */
+  margin-left: auto; /* 왼쪽 마진을 auto로 설정 */
+  margin-right: auto; /* 오른쪽 마진을 auto로 설정 */
   padding: 10px 20px;
-  font-size: 18px;
+  font-size: 15px;
   border: none;
   border-radius: 5px;
   color: white;
   background-color: blue;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 20px; /* 하단 여백 */
   transition: background-color 0.3s;
 }
 
-
-.location-btn:hover {
-  background-color: #45a049;
-}
-
-.coords-text, .address-text {
-  margin-top: 10px;
-  font-size: 16px;
-  color: #333;
-}
-
 #map {
-  width: 400px;
-  align-items: center;
-  justify-content: center;
-  height: 500px;
-  border: 1px #a8a8a8 solid;
-  margin: 50px auto;
+  width: 600px;
+  height: 600px;
+  border: 1px solid #e0e0e0;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.commute-btn:not(.checked-in) {
-  width: 50px;
-  height: 50px;
-  background-color: #4CAF50;
-  color: white;
-}
-
-.commute-btn:not(.checked-in):hover {
-  background-color: #45a049;
-}
-
-.commute-btn.checked-in {
-  background-color: #f44336;
-  width: 50px;
-  height: 50px;
-  color: white;
-}
-
-.commute-btn.checked-in:hover {
-  background-color: #d32f2f;
-}
 
 </style>
