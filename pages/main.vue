@@ -24,42 +24,21 @@ import {useRouter } from 'nuxt/app'
 import {onMounted} from 'vue';
 
 const links = [
-  {text: '직원 목록', path: '/emp/empList'},
+/*  {text: '직원 목록', path: '/emp/empList'},*/
   {text: '휴가 신청', path: '/vc/vcCreate'},
-  {text: '휴가 목록', path: '/vc/vcList'},
+/*  {text: '휴가 목록', path: '/vc/vcList'},*/
   {text: '출퇴근', path: '/emp/empCommute'},
-  {text: '출퇴근 목록', path: '/emp/empCommuteList'},
+/*  {text: '출퇴근 목록', path: '/emp/empCommuteList'},*/
 ];
-
-/*v-if="link.condition === 'all'
-|| (isAdmin && link.condition === 'admin')
-|| (!isAdmin && link.condition === 'user')">*/
-/*const links = [
-  {text: '직원 목록', path: '/emp/empList', condition: 'admin'},
-  {text: '휴가 신청', path: '/vc/vcCreate', condition: 'user'},
-  {text: '휴가 목록', path: '/vc/vcList', condition: 'user'},
-  {text: '출퇴근', path: '/emp/empCommute', condition: 'user'},
-  {text: '출퇴근 목록', path: '/emp/empCommuteList', condition: 'user'},
-];
-
-const isAdmin = ref(false);*/
 
 const router = useRouter();
 
-
-
 onMounted(async () => {
-  // 카카오 SDK 로드 확인
-  if (!window.Kakao) {
-    const kakaoLoginScript = document.createElement('script');
-    kakaoLoginScript.src = "//developers.kakao.com/sdk/js/kakao.js";
-    kakaoLoginScript.addEventListener('load', () => {
-      Kakao.init('7ab35a2ef3b2ad6d27aa8a80bfc99a3a');  // 카카오 앱 키
-    });
-    document.head.appendChild(kakaoLoginScript);
-  }
+
 })
 </script>
+
+
 
 <style scoped>
 .main-container {
@@ -84,7 +63,7 @@ onMounted(async () => {
 
 .menu-list {
   list-style: none;
-  padding: 0;
+  padding: 15px 16px;
 }
 
 .menu-list li {

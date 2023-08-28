@@ -1,10 +1,10 @@
 <template>
-  <v-card>
-    <v-container class="main-container" style="font-size: 14px;">
-      <v-row class="header">
-        <v-form class="custom-form" @submit.prevent="getCmList">
-          <v-card-text class="search-box" style="height: 200px;">
+  <v-card class="pa-14" >
+    <v-container class="main-container" style="font-size: 14px;width: 100%">
+        <v-form @submit.prevent="getCmList">
+          <v-card-text class="search-box">
             <v-row justify="start" style="margin-left: 110px">
+
               <p class="text-center" style="margin-right: 40px; margin-top: 30px">
                 사원 번호
               </p>
@@ -12,10 +12,10 @@
                 <v-text-field v-model="model.empNo" variant="underlined" class="text-box" clearable
                               @keyup.enter="getCmList"></v-text-field>
               </v-col>
-              <p class="text-center" style="margin-right: 80px; margin-top: 30px">
+              <p class="text-center" style="margin-right: 40px; margin-top: 30px">
                 이름
               </p>
-              <v-col cols="3" md="3" style="margin-left: -39px; margin-top: -6px">
+              <v-col cols="3" md="3" style="margin-top: -6px">
                 <v-text-field v-model="model.empNm" variant="underlined" class="text-box" clearable
                               @keyup.enter="getCmList"></v-text-field>
               </v-col>
@@ -25,7 +25,6 @@
           </v-row>
         </v-card-text>
       </v-form>
-      </v-row>
       <v-spacer></v-spacer>
       <div>
         <v-data-table-server
@@ -153,28 +152,26 @@ function pagingSet() {
 }
 </script>
 
-
 <style scoped>
-.container-style {
-  margin-top: 15px
+
+.text-center {
+  margin-top: 28px;
 }
 
 .my-table-style {
   border: 1px solid #ccc;
   border-radius: 30px;
-  width: 100%;
   font-size: 14px;
   cursor: pointer;
+  margin: 20px 0; /* 상하 간격 추가 */
 }
 
-
-
-.search-box {
-  width: 100%;
-  height: 145px;
-  border-radius: 30px;
+.me-4 {
+  margin-top: 25px;
+  margin-left: 25px;
   border: 1px solid #ccc;
-  margin-bottom: 12px;
+  border-radius: 10px;
+  padding: 8px;
 }
 
 .select-box {
@@ -182,27 +179,18 @@ function pagingSet() {
   width: 100px;
 }
 
-.date-box {
-  width: 25%;
-  margin-right: 30px;
-  margin-top: 20px;
-}
-
-.me-4 {
-  margin-top: 9px;
-  margin-left: 363px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 8px;
-}
-
-.text-center {
-  margin-top: 28px;
-}
-
 .text-box {
   margin-left: -40px;
   margin-right: 100px;
+}
+
+.search-box {
+  width: 100%;
+  height: 145px;
+  border-radius: 30px;
+  border: 1px solid #ccc;
+  margin-bottom: 12px;
+  padding: 20px 0; /* 위 아래 간격 추가 */
 }
 
 .red-color {
@@ -212,4 +200,5 @@ function pagingSet() {
 .blue-color {
   color: blue;
 }
+
 </style>

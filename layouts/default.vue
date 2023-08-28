@@ -1,17 +1,35 @@
 <template>
   <div>
     <v-app-bar color="gray" dense dark>
-      <nuxt-link to="/main">
+      <nuxt-link to="/main" style="margin-left: 100px">
         <v-btn outlined color="black">
           목록
         </v-btn>
       </nuxt-link>
 
-      <v-spacer></v-spacer>
+      <v-row style="">
+      <nuxt-link to="/emp/empList" style="margin-left: 100px">
+        <v-btn outlined color="black">
+          직원 목록
+        </v-btn>
+      </nuxt-link>
 
-      <v-btn color="gray" @click="logout">
+      <nuxt-link to="/vc/vcList" style="margin-left: 100px">
+        <v-btn outlined color="black">
+          휴가 목록
+        </v-btn>
+      </nuxt-link>
+
+      <nuxt-link to="/emp/empCommuteList" style="margin-left: 100px">
+        <v-btn outlined color="black">
+          출퇴근 목록
+        </v-btn>
+      </nuxt-link>
+      </v-row>
+      <v-btn color="gray" @click="logout" style="margin-left: 700px">
+        <v-icon color="black" >mdi-logout</v-icon>
         로그아웃
-        <v-icon color="white">mdi-logout</v-icon>
+
       </v-btn>
     </v-app-bar>
 

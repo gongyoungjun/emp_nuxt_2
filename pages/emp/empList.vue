@@ -1,9 +1,10 @@
 <template>
-  <v-card class="pa-16">
+  <v-card class="pa-14" >
     <v-container class="main-container" style="font-size: 14px; width: 100%">
       <v-form @submit.prevent="getEmpFromApi">
         <v-card-text class="search-box">
           <v-row justify="start" style="margin-left: 110px">
+
             <p class="text-center" style="margin-right: 40px; margin-top: 30px">
               사원 번호
             </p>
@@ -15,26 +16,18 @@
               이름
             </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
-              <v-text-field
-                  v-model="model.empNm"
-                  variant="underlined"
-                  class="text-box"
-                  clearable
-                  @keyup.enter="getEmpFromApi"
-              ></v-text-field>
+              <v-text-field v-model="model.empNm" variant="underlined" class="text-box"
+                            clearable @keyup.enter="getEmpFromApi"></v-text-field>
             </v-col>
-          </v-row>
-          <p class="text-center"></p>
-          <v-col md="2" style="margin-top: 8px; margin-right: 22px;"></v-col>
-          <v-col md="2" style="margin-left: 10px; margin-top: -86px">
             <v-btn variant="text" class="me-4" @click="getEmpFromApi" append-icon="mdi-magnify">
               검색
             </v-btn>
-          </v-col>
+          </v-row>
         </v-card-text>
       </v-form>
       <v-spacer></v-spacer>
       <div>
+
         <v-data-table-server
             :headers="model.headers"
             :items="list"
@@ -49,11 +42,12 @@
               <td></td>
               <td> {{ item.columns.empNo }}</td>
               <td> {{ item.columns.empNm }}</td>
-              <td> {{ item.columns.rnkNm }}</td>
+              <td> {{ item.columns.empRnkNm }}</td>
               <td> {{ item.columns.empEml }}</td>
               <td> {{ item.columns.empBrtDt }}</td>
               <td> {{ item.columns.empHrDt }}</td>
               <td> {{ item.columns.empVctnTtl }}</td>
+              <td> {{ item.columns.empStNm }}</td>
             </tr>
           </template>
 
@@ -71,9 +65,10 @@ import {useEmpStore} from "~/store/emp";
   layout: "admin"
 })*/
 
+
 import {VDataTableServer} from 'vuetify/labs/VDataTable';
 import '@vuepic/vue-datepicker/dist/main.css';
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useRouter} from 'nuxt/app';
 
 const router = useRouter()
@@ -92,12 +87,12 @@ let model = ref({
   },
     {title: '사원번호', key: 'empNo'},
     {title: '사원이름', key: 'empNm'},
-    {title: '직급', key: 'rnkNm'},
+    {title: '직급', key: 'empRnkNm'},
     {title: '이메일', key: 'empEml'},
     {title: '생년월일', key: 'empBrtDt'},
     {title: '입사일', key: 'empHrDt'},
-    /*    {title: '재직상태', key: 'stNm'},*/
-    {title: '총휴가일수', key: 'empVctnTtl'}
+    {title: '총휴가일수', key: 'empVctnTtl'},
+    {title: '재직여부', key: 'empStNm'},
   ],
   empNo: '',
   empNm: '',
@@ -115,6 +110,10 @@ watch(
     },
     {deep: true}
 )
+
+onMounted(() => {
+  getEmpFromApi();
+});
 
 function getEmpFromApi() {
   model.value.loading = true
@@ -181,9 +180,6 @@ export default {
 </script>
 
 <style scoped>
-.container-style {
-  margin-top: 15px;
-}
 
 .text-center {
   margin-top: 28px;
@@ -198,7 +194,7 @@ export default {
 }
 
 .me-4 {
-  margin-top: 9px;
+  margin-top: 25px;
   margin-left: 25px;
   border: 1px solid #ccc;
   border-radius: 10px;

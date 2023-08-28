@@ -19,15 +19,12 @@
     휴가 사유:
     <input v-model="vctn.vctnRsn" placeholder="휴가 사유" disabled /><br />
     휴가:
-    <select v-model="vctn.vctnStCd" v-if="isEditing">
+    <select v-model="vctn.vctnStCd">
       <option v-for="item in state" :key="item.value" :value="item.value">{{ item.name }}</option>
     </select>
-    <span v-else>{{ getStateName(vctn.vctnStCd) }}</span>
 
     <br /><br /><br />
-    <button @click="toggleEdit">{{ isEditing ? '취소' : '편집' }}</button>
-    <br>
-    <button @click="saveVctn" v-if="isEditing">승인 및 저장</button>
+    <button @click="saveVctn">승인 및 저장</button>
     <br>
     <button @click="vctnList">목록</button>
   </div>
@@ -77,7 +74,7 @@ getVctnInfo();
 async function saveVctn() {
   const response = await store.vctnSt(toRaw(vctn.value));
   if (response && response.data && response.data.value) {
-    vctn.value = response.data.value.vacationList;
+    vctn.value = response.data.value.data;
     await router.push({ path: "/vc/vcList" });
   } else {
     console.error("오류: 휴가 정보를 업데이트하는데 실패했습니다.");
@@ -92,9 +89,9 @@ function vctnList() {
   router.replace({ path: "/vc/vcList" });
 }
 
-const getStateName = (stateCode) => {
+/*const getStateName = (stateCode) => {
   const foundState = state.value.find((item) => item.value === stateCode);
   return foundState ? foundState.name : "";
-};
+};*/
 
 </script>

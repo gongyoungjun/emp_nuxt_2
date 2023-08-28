@@ -1,4 +1,6 @@
 <template>
+
+
   <div class="login-container">
     <h2>로그인</h2>
     <form @submit.prevent="login">
@@ -28,13 +30,22 @@ import {ref} from 'vue';
 import {onMounted} from 'vue';
 import {useEmpStore} from "~/store/emp";
 
+
+/**
+ * 레이아웃 지움
+ */
+definePageMeta({
+  layout: "default"
+})
+
 const router = useRouter();
 const empStore = useEmpStore();
 const {login: authLogin} = useAuthStore();
 
 const userPhn = ref('');
 const password = ref('');
-const errorMessage = ref("");
+const errorMessage = ref('');
+const empAuthCd = ref('');
 
 
 async function login() {
@@ -50,11 +61,20 @@ async function login() {
     if (data && data.value.code != '0000') {
       errorMessage.value = data.value.message;
     } else if (data && data.value.code == '0000') {
+      //권한 체크
+      empAuthCd.value = data.value.data[0].empAuthCd;
       // 토큰을 로컬 스토리지에 저장
       localStorage.setItem('token', data.value.token);
 
       // 토큰 확인
       console.log('로그인 후 토큰:', localStorage.getItem('token'));
+      // 권한 별로 창
+      if (empAuthCd.value === '01') {
+        alert('관리자로 로그인했습니다.');
+        console.log('empAuthCd:', empAuthCd.value);
+      } else if (empAuthCd.value === '03') {
+        alert('일반 사용자로 로그인했습니다.');
+      }
 
       await router.push({path: '/main'});
     }
@@ -69,19 +89,13 @@ onMounted(() => {
   const tokenInLocalStorage = localStorage.getItem('token');
   console.log('토큰 확인:', tokenInLocalStorage);
 
-  // 카카오 토큰 확인
-  /*  const kakaoTokenInSession = sessionStorage.getItem('KAKAO_TOKEN');
-    console.log('카카오 토큰 확인:', kakaoTokenInSession);*/
-
   if (tokenInLocalStorage) {
     router.push({path: '/main'});
   }
-
   // 카카오 SDK 로딩 로직
   if (!window.Kakao) {
     const kakaoLoginScript = document.createElement('script');
     kakaoLoginScript.src = "//developers.kakao.com/sdk/js/kakao.js";
-
     kakaoLoginScript.addEventListener('load', () => {
       Kakao.init('7ab35a2ef3b2ad6d27aa8a80bfc99a3a');  // 카카오 앱 키
     });
@@ -90,7 +104,6 @@ onMounted(() => {
 });
 
 const KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/authorize?client_id=7ab35a2ef3b2ad6d27aa8a80bfc99a3a&redirect_uri=http://localhost:3000/login/code&response_type=code";
-
 const handleKakaoAuth = async () => {
   try {
     const response = await fetch(KAKAO_AUTH_URL);
