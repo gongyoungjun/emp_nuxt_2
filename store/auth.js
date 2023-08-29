@@ -11,18 +11,10 @@ export const useAuthStore = defineStore('auth', () => {
         return await useApi("post", "/signup", param);
     }
 
-    /**
-     * 카카오 회원가입
-     */
-/*
-    const kakaoJoin = async (param) => {
-        console.log("카카오 회원가입", param)
-        return await useApi("post", "/kakao/signup", param);
-    }
-*/
 
     return {
-        join
+        join,
+
     }
 
 });

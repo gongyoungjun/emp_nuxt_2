@@ -1,8 +1,9 @@
 <template>
+  <NuxtLayout>
   <v-container class="main-container">
     <v-row class="header">
       <v-col>
-        <h1 class="title">메인 페이지</h1>
+        <h1 class="title">Main page</h1>
       </v-col>
 
     </v-row>
@@ -17,6 +18,7 @@
       </v-list-item-group>
     </v-list>
   </v-container>
+  </NuxtLayout>
 </template>
 
 <script setup>

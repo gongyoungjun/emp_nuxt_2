@@ -29,7 +29,7 @@
 
 <script>
 import { ref } from 'vue';
-import { useAuthStore } from '../../store/auth';
+import { useAuthStore } from '../../store/login';
 
 const authStore = useAuthStore();
 export default {

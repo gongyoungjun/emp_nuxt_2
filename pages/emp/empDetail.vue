@@ -1,31 +1,46 @@
 <template>
-  <div>
-    사원번호
-    <input v-model="empData.empNo" placeholder="사원 번호" disabled/> <br>
-    이름
-    <input v-model="empData.empNm" placeholder="이름"/> <br>
-    직급
-    <select v-model="empData.empRnkCd"  @change="updateRnkNm">
-      <option v-for="item in rnkCd" :key="item.value" :value="item.value">{{ item.name }}</option>
-    </select><br>
-    이메일
-    <input v-model="empData.empEml" placeholder="이메일"/> <br>
-    생년월일
-    <input v-model="empData.empBrtDt" placeholder="생년월일" /> <br>
-    입사일
-    <input v-model="empData.empHrDt" placeholder="입사일" /> <br>
-    재직상태
-
-    <select v-model="empData.empStCd" @change="updateStNm">
-      <option v-for="item in stCd" :key="item.value" :value="item.value">{{ item.name }}</option>
-    </select>
-
-    <br>
-    총 휴가 일수
-    <input v-model="empData.empVctnTtl" placeholder="총휴가일수" disabled/> <br>
-
+  <NuxtLayout>
+  <div class="employee-form">
+    <h2>사원 정보 수정</h2>
+    <div class="form-group">
+      <label>사원번호</label>
+      <input v-model="empData.empNo" placeholder="사원 번호" disabled />
+    </div>
+    <div class="form-group">
+      <label>이름</label>
+      <input v-model="empData.empNm" placeholder="이름" />
+    </div>
+    <div class="form-group">
+      <label>직급</label>
+      <select v-model="empData.empRnkCd" @change="updateRnkNm">
+        <option v-for="item in rnkCd" :key="item.value" :value="item.value">{{ item.name }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>이메일</label>
+      <input v-model="empData.empEml" placeholder="이메일" />
+    </div>
+    <div class="form-group">
+      <label>생년월일</label>
+      <input v-model="empData.empBrtDt" placeholder="생년월일" />
+    </div>
+    <div class="form-group">
+      <label>입사일</label>
+      <input v-model="empData.empHrDt" placeholder="입사일" />
+    </div>
+    <div class="form-group">
+      <label>재직상태</label>
+      <select v-model="empData.empStCd" @change="updateStNm">
+        <option v-for="item in stCd" :key="item.value" :value="item.value">{{ item.name }}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>총 휴가 일수</label>
+      <input v-model="empData.empVctnTtl" placeholder="총 휴가 일수" disabled />
+    </div>
     <button @click="editEmp">수정 및 확인</button>
   </div>
+  </NuxtLayout>
 </template>
 
 <script setup>
@@ -134,3 +149,50 @@ async function editEmp() {
 
 </script>
 
+
+<style scoped>
+
+.employee-form {
+  max-width: 400px;
+  margin: auto;
+  margin-top: 45px;
+  margin-bottom: 45px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  display: block;
+  margin: auto;
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+</style>

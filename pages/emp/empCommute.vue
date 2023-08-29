@@ -160,7 +160,9 @@ async function sendData() {
     if (response.status._rawValue === 'success') {
       // API 호출이 성공적으로 처리된 경우
       console.log("출퇴근 정보가 업데이트되었습니다.");
-
+      const message = isCommute.value ? "퇴근하셨습니다." : "출근하셨습니다.";
+      alert(message);
+      await router.push({path: '/main'});
 /*      const message = `영준님이 ${isCommute.value ? "퇴근" : "출근"}하셨습니다. 위치: ${address.value}`;
       sendKakaoMessage(message);*/
     } else {

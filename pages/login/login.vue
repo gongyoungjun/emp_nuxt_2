@@ -1,6 +1,4 @@
 <template>
-
-
   <div class="login-container">
     <h2>로그인</h2>
     <form @submit.prevent="login">
@@ -14,29 +12,26 @@
       </div>
       <button type="submit">로그인</button>
     </form>
-<!--    <button @click="kakaoLogin" class="kakaoLogin">카카오톡으로 로그인</button>-->
+    <!--    <button @click="kakaoLogin" class="kakaoLogin">카카오톡으로 로그인</button>-->
     <br>
-        <a :href="KAKAO_AUTH_URL" class="kakaoAuthUrl">카카오톡으로 로그인</a>
+    <a v-if="shouldShowKakaoLink" :href="KAKAO_AUTH_URL" class="kakaoAuthUrl">카카오톡으로 로그인</a>
     <p v-if="errorMessage">{{ errorMessage }}</p>
   </div>
-
 </template>
 
 
 <script setup>
 import {useRouter} from 'nuxt/app';
-import {useAuthStore} from '../../store/login';
-import {ref} from 'vue';
+import {useAuthStore} from '~/store/login';
+import {ref, defineProps} from 'vue';
 import {onMounted} from 'vue';
-import {useEmpStore} from "~/store/emp";
-
+import {useEmpStore} from '~/store/emp';
 
 /**
  * 레이아웃 지움
  */
-definePageMeta({
-  layout: "default"
-})
+const props = defineProps();
+props.layout = 'empty';
 
 const router = useRouter();
 const empStore = useEmpStore();
@@ -46,8 +41,7 @@ const userPhn = ref('');
 const password = ref('');
 const errorMessage = ref('');
 const empAuthCd = ref('');
-
-
+const empNo = ref('');
 async function login() {
   errorMessage.value = '';
 
@@ -62,24 +56,34 @@ async function login() {
       errorMessage.value = data.value.message;
     } else if (data && data.value.code == '0000') {
       //권한 체크
-      empAuthCd.value = data.value.data[0].empAuthCd;
+      empAuthCd.value = data.value.data.empAuthCd;
+
+      empNo.value = data.value.data.empNo;
+
       // 토큰을 로컬 스토리지에 저장
       localStorage.setItem('token', data.value.token);
+      empStore.setEmpAuthCd(empAuthCd.value);
 
+      empStore.setEmpNo(empNo.value);
       // 토큰 확인
       console.log('로그인 후 토큰:', localStorage.getItem('token'));
+
+      console.log('로그인 후 empAuthCd:', empAuthCd.value);
+
+
       // 권한 별로 창
       if (empAuthCd.value === '01') {
         alert('관리자로 로그인했습니다.');
         console.log('empAuthCd:', empAuthCd.value);
+        await router.push({path: '/main/admin'});
       } else if (empAuthCd.value === '03') {
         alert('일반 사용자로 로그인했습니다.');
       }
-
       await router.push({path: '/main'});
     }
   } catch (error) {
     errorMessage.value = '로그인 중 오류가 발생했습니다. 다시 시도해주세요.';
+    console.error(error);
   }
 }
 
@@ -104,6 +108,11 @@ onMounted(() => {
 });
 
 const KAKAO_AUTH_URL = "https://kauth.kakao.com/oauth/authorize?client_id=7ab35a2ef3b2ad6d27aa8a80bfc99a3a&redirect_uri=http://localhost:3000/login/code&response_type=code";
+
+const shouldShowKakaoLink = computed(() => {
+  return !(userPhn.value && password.value); // 이메일과 전화번호 없으면 카카오 링크 숨김
+});
+
 const handleKakaoAuth = async () => {
   try {
     const response = await fetch(KAKAO_AUTH_URL);
@@ -116,6 +125,7 @@ const handleKakaoAuth = async () => {
     const emailExists = await checkEmpEmail(profile.email);
 
     if (emailExists) {
+
       await router.push({path: '/main'});
     } else {
       await router.push({path: '/login/kakaoSign'});
@@ -226,10 +236,12 @@ async function checkEmpEmail(email) {
 
 .login-container {
   max-width: 300px;
-  margin: 0 auto;
+  margin: auto;
+  margin-top: 150px;
+  margin-bottom: 45px;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
 }
 
 .form-group {

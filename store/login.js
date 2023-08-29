@@ -5,6 +5,16 @@ import { ref } from "vue";
 export const useAuthStore = defineStore('auth', () => {
     const token = ref(''); // 토큰을 저장하는 ref 변수
 
+
+    /**
+     * 회원가입
+     */
+    const join = async (param) => {
+        console.log("회원가입", param)
+        return await useApi("post", "/signup", param);
+    }
+
+
     const setToken = (newToken) => {
         token.value = newToken;
         localStorage.setItem('token', newToken); // 토큰을 localStorage에 저장
@@ -77,6 +87,7 @@ export const useAuthStore = defineStore('auth', () => {
         return await useApi("post", "/kakao/signup", param);
     }
     return {
+        join,
         getToken, // 현재 토큰 가져오기
         login,   // 로그인 함수
         logout,   // 로그아웃 함수

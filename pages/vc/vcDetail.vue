@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <NuxtLayout>
+  <div class="vacation-form">
     NO:
     <input v-model="vctn.vctnNo" placeholder="No" disabled /><br />
     사번:
@@ -28,6 +29,7 @@
     <br>
     <button @click="vctnList">목록</button>
   </div>
+  </NuxtLayout>
 </template>
 
 <script setup>
@@ -95,3 +97,57 @@ function vctnList() {
 };*/
 
 </script>
+
+
+<style scoped>
+
+
+
+.vacation-form {
+  max-width: 400px;
+  margin: auto;
+  margin-top: 45px;
+  margin-bottom: 45px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  display: block;
+  margin: auto;
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:last-child {
+  margin: auto;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+</style>

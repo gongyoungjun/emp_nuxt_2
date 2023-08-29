@@ -1,4 +1,5 @@
 <template>
+  <NuxtLayout>
   <v-card class="pa-14" >
     <v-container class="main-container" style="font-size: 14px; width: 100%">
       <v-form @submit.prevent="getEmpFromApi">
@@ -55,7 +56,7 @@
       </div>
     </v-container>
   </v-card>
-
+  </NuxtLayout>
 </template>
 
 <script setup>

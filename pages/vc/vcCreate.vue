@@ -1,32 +1,48 @@
 <template>
-  <div>
-    <h1>휴가 신청 정보 입력</h1>
+  <NuxtLayout>
+  <div class="vacation-form">
+    <h2 class="form-title">휴가 신청 정보 입력</h2>
     <v-form>
-      <label>사원번호:</label>
-      <input v-model="vctn.empNo" type="text" readOnly><br>
-      <label>사원이름:</label>
-      <input v-model="vctn.empNm" type="text" readOnly><br>
-      <label>남은 휴가:</label>
-      <input v-model="vctn.vctnRsdCnt" type="text" readOnly><br>
-      <label>연차 분류:</label>
-      <select v-model="vctn.vctnKndCd">
-        <option v-for="s in state" :key="s.value" :value="s.value">
-          {{ s.name }}
-        </option>
-      </select>
-      <br><label>휴가 사유:</label>
-      <input v-model="vctn.vctnRsn" type="text"><br>
-      <label>휴가 시작 날짜:</label>
-      <input v-model="vctn.vctnStrDt" type="date"><br>
-      <label>휴가 마지막 날짜:</label>
-      <input v-model="vctn.vctnEndDt" type="date"><br>
-      <label>휴가 일수:</label>
-      <input v-model="totalVacationDays" type="text" readOnly><br>
-      <v-btn variant="text" className="me-4" @click="handleSubmit">
-        휴가신청
-      </v-btn>
+      <div class="form-field">
+        <label class="form-label">사원번호:</label>
+        <input class="form-input" v-model="vctn.empNo" type="text" readOnly>
+      </div>
+      <div class="form-field">
+        <label class="form-label">사원이름:</label>
+        <input class="form-input" v-model="vctn.empNm" type="text" readOnly>
+      </div>
+      <div class="form-field">
+        <label class="form-label">남은 휴가:</label>
+        <input class="form-input" v-model="vctn.vctnRsdCnt" type="text" readOnly>
+      </div>
+      <div class="form-field">
+        <label class="form-label">연차 분류:</label>
+        <select class="form-select" v-model="vctn.vctnKndCd">
+          <option v-for="s in state" :key="s.value" :value="s.value">{{ s.name }}</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">휴가 사유:</label>
+        <input class="form-input" v-model="vctn.vctnRsn" type="text">
+      </div>
+      <div class="form-field">
+        <label class="form-label">휴가 시작 날짜:</label>
+        <input class="form-input" v-model="vctn.vctnStrDt" type="date">
+      </div>
+      <div class="form-field">
+        <label class="form-label">휴가 마지막 날짜:</label>
+        <input class="form-input" v-model="vctn.vctnEndDt" type="date">
+      </div>
+<!--      <div class="form-field">
+        <label class="form-label">휴가 일수:</label>
+        <input class="form-input" v-model="totalVacationDays" type="text" readOnly>
+      </div>-->
+      <div class="form-actions">
+        <v-btn variant="contained" color="primary" @click="handleSubmit">휴가신청</v-btn>
+      </div>
     </v-form>
   </div>
+  </NuxtLayout>
 </template>
 
 <script setup>
@@ -139,6 +155,43 @@ function getWorkdaysBetween(startDate, endDate) {
 
 </script>
 
-<style>
 
+
+<style scoped>
+.vacation-form {
+  max-width: 400px;
+  margin: auto;
+  margin-top: 45px;
+  margin-bottom: 45px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.form-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.form-field {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  font-weight: bold;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-actions {
+  margin-top: 20px;
+  text-align: right;
+}
 </style>

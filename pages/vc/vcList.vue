@@ -1,4 +1,5 @@
 <template>
+  <NuxtLayout>
   <v-card class="pa-14">
     <v-container class="main-container" style="font-size: 14px; width: 100%">
       <v-form @submit.prevent="getVctnFromApi">
@@ -6,12 +7,11 @@
 
 
           <v-row justify="start" style="margin-left: 110px">
-            <!-- 휴가 번호 -->
             <p class="text-center" style="margin-right: 40px; margin-top: 30px">
-              휴가 번호
+              사원 번호
             </p>
             <v-col cols="3" md="3" style="margin-top: -6px">
-              <v-text-field v-model="model.vctnNo" variant="underlined" class="text-box" clearable
+              <v-text-field v-model="model.empNo" variant="underlined" class="text-box" clearable
                             @keyup.enter="getVctnFromApi"></v-text-field>
             </v-col>
             <!-- 이름 -->
@@ -76,6 +76,7 @@
       </div>
     </v-container>
   </v-card>
+  </NuxtLayout>
 </template>
 
 <script setup>
@@ -109,6 +110,7 @@ let model = ref({
     {title: '휴가 신청일', key: 'vctnAplDtm'},
     {title: '신청 상태', key: 'vctnStNm'},
   ],
+  empNo:'',
   vctnNo: '',
   empNm: '',
   vctnStrDt: '',
@@ -146,7 +148,7 @@ function getVctnFromApi() {
 
     //검색
     let searchParam = {
-      vctnNo: model.value.vctnNo,
+      empNo: model.value.empNo,
       empNm: model.value.empNm,
       strDt: model.value.strDt,
       endDt: model.value.endDt,

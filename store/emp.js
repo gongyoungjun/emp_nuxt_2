@@ -42,6 +42,26 @@ export const useEmpStore = defineStore('emp', () => {
         return await useApi("post", "/kakao/snsKey", param);
     }
 
+    /**
+     * pinia
+     * 상태 관리 도구 사용
+     * 스토어 확정
+     * 다른 page, 컴포넌트 데이터 전달
+     */
+    const empAuthCd = ref(null);
+    const setEmpAuthCd = (value) => {
+        empAuthCd.value = value;
+    }
+    const getEmpAuthCd = () => empAuthCd.value;
+
+
+    const empNo = ref(null);
+    const setEmpNo = (value) => {
+        empNo.value = value;
+    }
+    const getEmpNo = () => empNo.value;
+
+
     return {
         empList
         , empUpdate
@@ -51,5 +71,13 @@ export const useEmpStore = defineStore('emp', () => {
         , empSnsKey
         , kakaoInfoUser
         , empCommuteList
+        , empAuthCd
+        , setEmpAuthCd
+        , getEmpAuthCd
+        , empNo
+        , setEmpNo
+        , getEmpNo
+
+
     }
 });
