@@ -1,13 +1,12 @@
 <script setup>
 import {onMounted, ref} from 'vue';
-import {useRouter, useRoute} from 'nuxt/app';
+import {useRouter} from 'nuxt/app';
 import {useAuthStore} from '@/store/login';
 import {useEmpStore} from "~/store/emp";
 
 const empStore = useEmpStore();
 const router = useRouter();
 const store = useAuthStore();
-const route = useRoute();
 
 const employee = ref({
 
