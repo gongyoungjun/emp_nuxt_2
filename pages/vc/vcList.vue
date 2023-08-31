@@ -60,6 +60,7 @@
           <template #item="{ item, index }">
             <tr @click="showVctn(item.columns.vctnNo)" v-if="!model.loading">
               <td></td>
+              <td>{{ (model.indexPage - 1) * model.indexPerPage + index + 1 }}</td>
               <td> {{ item.columns.vctnNo }}</td>
               <td> {{ item.columns.empNm }}</td>
               <td> {{ item.columns.empVctnTtl }}</td>
@@ -99,6 +100,7 @@ let model = ref({
   headers: [{
     sortable: false,
   },
+    {title: '순번', key: 'index'},
     {title: 'No', key: 'vctnNo'},
     {title: '사원이름', key: 'empNm'},
     {title: '총 휴가 일수', key: 'empVctnTtl'},

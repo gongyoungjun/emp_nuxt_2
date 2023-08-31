@@ -41,7 +41,6 @@ const userPhn = ref('');
 const password = ref('');
 const errorMessage = ref('');
 const empAuthCd = ref('');
-const empNo = ref('');
 async function login() {
   errorMessage.value = '';
 
@@ -58,13 +57,9 @@ async function login() {
       //권한 체크
       empAuthCd.value = data.value.data.empAuthCd;
 
-      empNo.value = data.value.data.empNo;
-
       // 토큰을 로컬 스토리지에 저장
       localStorage.setItem('token', data.value.token);
-      empStore.setEmpAuthCd(empAuthCd.value);
 
-      empStore.setEmpNo(empNo.value);
       // 토큰 확인
       console.log('로그인 후 토큰:', localStorage.getItem('token'));
 
@@ -75,7 +70,7 @@ async function login() {
       if (empAuthCd.value === '01') {
         alert('관리자로 로그인했습니다.');
         console.log('empAuthCd:', empAuthCd.value);
-        await router.push({path: '/main/admin'});
+        await router.push({path: '/main'});
       } else if (empAuthCd.value === '03') {
         alert('일반 사용자로 로그인했습니다.');
       }

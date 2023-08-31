@@ -1,61 +1,62 @@
 <template>
   <NuxtLayout>
-  <v-card class="pa-14" >
-    <v-container class="main-container" style="font-size: 14px; width: 100%">
-      <v-form @submit.prevent="getEmpFromApi">
-        <v-card-text class="search-box">
-          <v-row justify="start" style="margin-left: 110px">
+    <v-card class="pa-14">
+      <v-container class="main-container" style="font-size: 14px; width: 100%">
+        <v-form @submit.prevent="getEmpFromApi">
+          <v-card-text class="search-box">
+            <v-row justify="start" style="margin-left: 110px">
 
-            <p class="text-center" style="margin-right: 40px; margin-top: 30px">
-              사원 번호
-            </p>
-            <v-col cols="3" md="3" style="margin-top: -6px">
-              <v-text-field v-model="model.empNo" variant="underlined" class="text-box" clearable
-                            @keyup.enter="getEmpFromApi"></v-text-field>
-            </v-col>
-            <p class="text-center" style="margin-right: 40px; margin-top: 30px">
-              이름
-            </p>
-            <v-col cols="3" md="3" style="margin-top: -6px">
-              <v-text-field v-model="model.empNm" variant="underlined" class="text-box"
-                            clearable @keyup.enter="getEmpFromApi"></v-text-field>
-            </v-col>
-            <v-btn variant="text" class="me-4" @click="getEmpFromApi" append-icon="mdi-magnify">
-              검색
-            </v-btn>
-          </v-row>
-        </v-card-text>
-      </v-form>
-      <v-spacer></v-spacer>
-      <div>
+              <p class="text-center" style="margin-right: 40px; margin-top: 30px">
+                사원 번호
+              </p>
+              <v-col cols="3" md="3" style="margin-top: -6px">
+                <v-text-field v-model="model.empNo" variant="underlined" class="text-box" clearable
+                              @keyup.enter="getEmpFromApi"></v-text-field>
+              </v-col>
+              <p class="text-center" style="margin-right: 40px; margin-top: 30px">
+                이름
+              </p>
+              <v-col cols="3" md="3" style="margin-top: -6px">
+                <v-text-field v-model="model.empNm" variant="underlined" class="text-box"
+                              clearable @keyup.enter="getEmpFromApi"></v-text-field>
+              </v-col>
+              <v-btn variant="text" class="me-4" @click="getEmpFromApi" append-icon="mdi-magnify">
+                검색
+              </v-btn>
+            </v-row>
+          </v-card-text>
+        </v-form>
+        <v-spacer></v-spacer>
+        <div>
 
-        <v-data-table-server
-            :headers="model.headers"
-            :items="list"
-            :items-length="model.totalList"
-            :items-per-page="model.listSize"
-            :loading="model.loading"
-            class="my-table-style"
-            @update:options="options = $event"
-        >
-          <template #item="{ item }">
-            <tr @click="showEmp(item.columns.empNo)" v-if="!model.loading">
-              <td></td>
-              <td> {{ item.columns.empNo }}</td>
-              <td> {{ item.columns.empNm }}</td>
-              <td> {{ item.columns.empRnkNm }}</td>
-              <td> {{ item.columns.empEml }}</td>
-              <td> {{ item.columns.empBrtDt }}</td>
-              <td> {{ item.columns.empHrDt }}</td>
-              <td> {{ item.columns.empVctnTtl }}</td>
-              <td> {{ item.columns.empStNm }}</td>
-            </tr>
-          </template>
+          <v-data-table-server
+              :headers="model.headers"
+              :items="list"
+              :items-length="model.totalList"
+              :items-per-page="model.listSize"
+              :loading="model.loading"
+              class="my-table-style"
+              @update:options="options = $event"
+          >
+            <template #item="{ item,index }">
+              <tr @click="showEmp(item.columns.empNo)" v-if="!model.loading">
+                <td></td>
+                <td>{{ (model.indexPage - 1) * model.indexPerPage + index + 1 }}</td>
+                <td> {{ item.columns.empNo }}</td>
+                <td> {{ item.columns.empNm }}</td>
+                <td> {{ item.columns.empRnkNm }}</td>
+                <td> {{ item.columns.empEml }}</td>
+                <td> {{ item.columns.empBrtDt }}</td>
+                <td> {{ item.columns.empHrDt }}</td>
+                <td> {{ item.columns.empVctnTtl }}</td>
+                <td> {{ item.columns.empStNm }}</td>
+              </tr>
+            </template>
 
-        </v-data-table-server>
-      </div>
-    </v-container>
-  </v-card>
+          </v-data-table-server>
+        </div>
+      </v-container>
+    </v-card>
   </NuxtLayout>
 </template>
 
@@ -86,6 +87,7 @@ let model = ref({
   headers: [{
     sortable: false,
   },
+    {title: '순번', key: 'index'},
     {title: '사원번호', key: 'empNo'},
     {title: '사원이름', key: 'empNm'},
     {title: '직급', key: 'empRnkNm'},
@@ -168,16 +170,6 @@ function showEmp(empNo) {
   })
 }
 
-</script>
-
-<script>
-import DefaultLayout from '@/layouts/default.vue';
-
-export default {
-  components: {
-    DefaultLayout
-  }
-};
 </script>
 
 <style scoped>

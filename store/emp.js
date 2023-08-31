@@ -48,7 +48,7 @@ export const useEmpStore = defineStore('emp', () => {
      * 스토어 확정
      * 다른 page, 컴포넌트 데이터 전달
      */
-    const empAuthCd = ref(null);
+/*    const empAuthCd = ref(null);
     const setEmpAuthCd = (value) => {
         empAuthCd.value = value;
     }
@@ -59,7 +59,7 @@ export const useEmpStore = defineStore('emp', () => {
     const setEmpNo = (value) => {
         empNo.value = value;
     }
-    const getEmpNo = () => empNo.value;
+    const getEmpNo = () => empNo.value;*/
 
 
     return {
@@ -71,12 +71,12 @@ export const useEmpStore = defineStore('emp', () => {
         , empSnsKey
         , kakaoInfoUser
         , empCommuteList
-        , empAuthCd
+/*        , empAuthCd
         , setEmpAuthCd
         , getEmpAuthCd
         , empNo
         , setEmpNo
-        , getEmpNo
+        , getEmpNo*/
 
 
     }

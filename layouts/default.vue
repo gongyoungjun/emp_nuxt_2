@@ -2,35 +2,35 @@
   <div>
     <v-app-bar color="gray" dense dark>
       <v-row style="">
-        <nuxt-link to="/main"  style="margin-left: 300px">
+        <nuxt-link to="/main" style="margin-left: 300px">
           <v-btn outlined color="black">
             목록
           </v-btn>
         </nuxt-link>
 
-        <nuxt-link to="/emp/empList" v-if="showAdmin" style="margin-left: 100px">
+        <nuxt-link to="/emp/empList" style="margin-left: 100px">
           <v-btn outlined color="black">
             직원 목록
           </v-btn>
         </nuxt-link>
 
-        <nuxt-link to="/vc/vcList" v-if="showAdmin" style="margin-left: 100px">
+        <nuxt-link to="/vc/vcList" style="margin-left: 100px">
           <v-btn outlined color="black">
             휴가 목록
           </v-btn>
         </nuxt-link>
 
-        <nuxt-link to="/emp/empCommuteList" v-if="showAdmin" style="margin-left: 100px">
+        <nuxt-link to="/emp/empCommuteList" style="margin-left: 100px">
           <v-btn outlined color="black">
             출퇴근 목록
           </v-btn>
         </nuxt-link>
 
-        <nuxt-link to="/emp/CommuteUser" v-if="showUser" style="margin-left: 100px">
+<!--        <nuxt-link to="/emp/CommuteUser" style="margin-left: 100px">
           <v-btn outlined color="black">
             출퇴근 목록
           </v-btn>
-        </nuxt-link>
+        </nuxt-link>-->
 
 
         <v-btn color="gray" @click="logout" style="margin-left: 700px">
@@ -53,14 +53,10 @@
 
 <script setup>
 import {useRouter} from 'nuxt/app';
-import { useEmpStore } from '~/store/emp';
-import { computed } from 'vue';
 
-const empStore = useEmpStore();
-const empAuthCd = empStore.getEmpAuthCd();
 const router = useRouter();
 
-onBeforeMount(() => {
+/*onBeforeMount(() => {
   if (empAuthCd === '03') {
     showUser.value = true;
   } else if (empAuthCd === '01') {
@@ -73,9 +69,7 @@ const showUser = computed(() => {
 
 const showAdmin = computed(() => {
   return empAuthCd === '01';
-});
-
-
+});*/
 
 
 // 로그아웃 함수

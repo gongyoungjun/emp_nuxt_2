@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout>
-  <v-card class="pa-14" >
-    <v-container class="main-container" style="font-size: 14px;width: 100%">
+    <v-card class="pa-14">
+      <v-container class="main-container" style="font-size: 14px;width: 100%">
         <v-form @submit.prevent="getCmList">
           <v-card-text class="search-box">
             <v-row justify="start" style="margin-left: 110px">
@@ -23,33 +23,35 @@
               <v-btn variant="text" class="me-4" @click="getCmList" append-icon="mdi-magnify">
                 검색
               </v-btn>
-          </v-row>
-        </v-card-text>
-      </v-form>
-      <v-spacer></v-spacer>
-      <div>
-        <v-data-table-server
-            :headers="model.headers"
-            :items="list"
-            :items-length="model.totalList"
-            :items-per-page="model.listSize"
-            :loading="model.loading"
-            class="my-table-style"
-            @update:options="options = $event"
-        >
-          <template #item="{ item }">
-            <tr v-if="!model.loading">
-              <td> {{ item.columns.empNo }}</td>
-              <td> {{ item.columns.empNm }}</td>
-              <td> {{ item.columns.time }}</td>
-              <td> {{ item.columns.address }}</td>
-              <td> {{ item.columns.workCd === '01' ? '출근' : '퇴근' }}</td>
-            </tr>
-          </template>
-        </v-data-table-server>
-      </div>
-    </v-container>
-  </v-card>
+            </v-row>
+          </v-card-text>
+        </v-form>
+        <v-spacer></v-spacer>
+        <div>
+          <v-data-table-server
+              :headers="model.headers"
+              :items="list"
+              :items-length="model.totalList"
+              :items-per-page="model.listSize"
+              :loading="model.loading"
+              class="my-table-style"
+              @update:options="options = $event"
+          >
+            <template #item="{ item , index}">
+              <tr v-if="!model.loading">
+                <td></td>
+                <td>{{ (model.indexPage - 1) * model.indexPerPage + index + 1 }}</td>
+                <td> {{ item.columns.empNo }}</td>
+                <td> {{ item.columns.empNm }}</td>
+                <td> {{ item.columns.time }}</td>
+                <td> {{ item.columns.address }}</td>
+                <td> {{ item.columns.workCd === '01' ? '출근' : '퇴근' }}</td>
+              </tr>
+            </template>
+          </v-data-table-server>
+        </div>
+      </v-container>
+    </v-card>
   </NuxtLayout>
 </template>
 
@@ -70,7 +72,10 @@ let list = ref([])
 let model = ref({
   totalList: 0,
   loading: true,
-  headers: [
+  headers: [{
+    sortable: false,
+  },
+    {title: '순번', key: 'index'},
     {title: '사원번호', key: 'empNo'},
     {title: '사원이름', key: 'empNm'},
     {title: '시간', key: 'time'},
