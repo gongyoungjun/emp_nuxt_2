@@ -41,7 +41,7 @@
             <template #item="{ item,index }">
               <tr @click="showEmp(item.columns.empNo)" v-if="!model.loading">
                 <td></td>
-                <td>{{ (model.indexPage - 1) * model.indexPerPage + index + 1 }}</td>
+                <td>{{ model.totalList - (model.indexPage - 1) * model.listSize - index }}</td>
                 <td> {{ item.columns.empNo }}</td>
                 <td> {{ item.columns.empNm }}</td>
                 <td> {{ item.columns.empRnkNm }}</td>
@@ -115,7 +115,6 @@ watch(
 )
 
 onMounted(() => {
-  getEmpFromApi();
 });
 
 function getEmpFromApi() {
@@ -139,7 +138,7 @@ function getEmpFromApi() {
     if (data.value.list === null) {
       list = []
     } else {
-      list = data.value.list
+      list.value = data.value.list
     }
     model.value.totalList = data.value.total
     model.value.loading = false

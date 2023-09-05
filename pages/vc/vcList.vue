@@ -53,14 +53,14 @@
             :items="list"
             :items-length="model.totalList"
             :items-per-page="model.listSize"
-            :loading="model.loading"
             class="my-table-style"
             @update:options="options = $event"
         >
           <template #item="{ item, index }">
             <tr @click="showVctn(item.columns.vctnNo)" v-if="!model.loading">
               <td></td>
-              <td>{{ (model.indexPage - 1) * model.indexPerPage + index + 1 }}</td>
+<!--              <td>{{ (model.indexPage - 1) * model.indexPerPage + index + 1 }}</td>-->
+              <td>{{ model.totalList - (model.indexPage - 1) * model.listSize - index }}</td>
               <td> {{ item.columns.vctnNo }}</td>
               <td> {{ item.columns.empNm }}</td>
               <td> {{ item.columns.empVctnTtl }}</td>
@@ -134,6 +134,9 @@ watch(
     {deep: true}
 )
 
+onMounted(() => {
+  // getVctnFromApi();
+});
 /**
  * API 호출
  * 휴가 목록 가져옴
@@ -163,7 +166,7 @@ function getVctnFromApi() {
     if (data.value.vacationList === null) {
       list = []
     } else {
-      list = data.value.vacationList
+      list.value = data.value.vacationList
     }
 
     model.value.totalList = data.value.total
@@ -217,7 +220,10 @@ function showVctn(vctnNo) {
   font-size: 14px;
   cursor: pointer;
   margin: 20px 0; /* 상하 간격 추가 */
+  height: 700px;
+  overflow-y: auto;
 }
+
 
 .me-4 {
   margin-top: 25px;
@@ -253,5 +259,11 @@ function showVctn(vctnNo) {
 .blue-color {
   color: blue;
 }
+
+
+
+
+
+
 </style>
 

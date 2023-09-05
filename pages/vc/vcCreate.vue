@@ -1,52 +1,36 @@
 <template>
   <NuxtLayout>
-  <div class="vacation-form">
-    <h2 class="form-title">휴가 신청 정보 입력</h2>
-    <v-form>
-      <div class="form-field">
+    <div class="vacation-form">
+      <h2 class="form-title">휴가 신청 정보 입력</h2>
         <label class="form-label">사원번호:</label>
         <input class="form-input" v-model="vctn.empNo" type="text" readOnly>
-      </div>
-      <div class="form-field">
         <label class="form-label">사원이름:</label>
         <input class="form-input" v-model="vctn.empNm" type="text" readOnly>
-      </div>
-      <div class="form-field">
         <label class="form-label">남은 휴가:</label>
         <input class="form-input" v-model="vctn.vctnRsdCnt" type="text" readOnly>
-      </div>
-      <div class="form-field">
         <label class="form-label">연차 분류:</label>
         <select class="form-select" v-model="vctn.vctnKndCd">
           <option v-for="s in state" :key="s.value" :value="s.value">{{ s.name }}</option>
         </select>
-      </div>
-      <div class="form-field">
         <label class="form-label">휴가 사유:</label>
         <input class="form-input" v-model="vctn.vctnRsn" type="text">
-      </div>
-      <div class="form-field">
         <label class="form-label">휴가 시작 날짜:</label>
         <input class="form-input" v-model="vctn.vctnStrDt" type="date">
-      </div>
-      <div class="form-field">
         <label class="form-label">휴가 마지막 날짜:</label>
         <input class="form-input" v-model="vctn.vctnEndDt" type="date">
-      </div>
-<!--      <div class="form-field">
-        <label class="form-label">휴가 일수:</label>
-        <input class="form-input" v-model="totalVacationDays" type="text" readOnly>
-      </div>-->
-      <div class="form-actions">
-        <v-btn variant="contained" color="primary" @click="handleSubmit">휴가신청</v-btn>
-      </div>
-    </v-form>
-  </div>
+        <!--      <div class="form-field">
+                <label class="form-label">휴가 일수:</label>
+                <input class="form-input" v-model="totalVacationDays" type="text" readOnly>
+              </div>-->
+        <div class="form-actions">
+          <v-btn variant="contained" color="primary" @click="handleSubmit">휴가신청</v-btn>
+        </div>
+    </div>
   </NuxtLayout>
 </template>
 
 <script setup>
-import {onMounted, ref, watch } from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import {useVctnStore} from '~/store/vctn';
 import {useEmpStore} from '~/store/emp';
 import jwtDecode from 'jwt-decode';
@@ -56,7 +40,7 @@ const router = useRouter();
 const empStore = useEmpStore();
 const store = useVctnStore();
 
-const totalVacationDays = ref(0);
+
 
 const vctn = ref({
   empNo: '',
@@ -67,7 +51,7 @@ const vctn = ref({
   empVctnTtl: '',
   vctnHalfCnt: '',
   vctnDayCnt: '',
-  vctnRsdCnt: '',
+  vctnRsdCnt: null,
   vctnAplDtm: '',
   vctnKndCd: '',
   vctnStCd: '',
@@ -77,7 +61,10 @@ const empData = ref({
   empNo: '',
   empNm: '',
   empVctnTtl: '',
+  vctnRsdCnt: '',
 });
+
+
 const state = ref([
   {name: "연차", value: "01"},
   {name: "오전반차", value: "02"},
@@ -86,16 +73,10 @@ const state = ref([
   {name: "병가", value: "05"},
 ]);
 
-onMounted(fetchEmpData);
-
-watch([vctn.value.vctnStrDt, vctn.value.vctnEndDt], () => {
-  console.log("Start Date:", vctn.value.vctnStrDt);
-  console.log("End Date:", vctn.value.vctnEndDt);
-  if (vctn.value.vctnStrDt && vctn.value.vctnEndDt) {
-    totalVacationDays.value = getWorkdaysBetween(new Date(vctn.value.vctnStrDt), new Date(vctn.vctnEndDt.value));
-    console.log("Total Days:", totalVacationDays.value);
-  }
+onMounted(() => {
+  fetchEmpData();
 });
+fetchEmpData();
 
 async function fetchEmpData() {
   let empNo = null;
@@ -103,10 +84,6 @@ async function fetchEmpData() {
   if (token) {
     const decodedToken = jwtDecode(token);
     empNo = decodedToken.empNo;
-  }
-
-  if (!empNo) {
-    empNo = router.currentRoute.value.query.empNo;
   }
 
   if (empNo) {
@@ -121,40 +98,30 @@ async function fetchEmpData() {
       console.error("Error: 사원 정보를 가져올 수 없습니다.");
     }
   }
+
 }
 
 async function handleSubmit() {
   const response = await store.vctnInsert(vctn.value);
+  console.log("vcCreate", response);
+
   if (response && response.data && response.data.value) {
-    vctn.value = response.data.value.data;
-    await router.push({path: '/vc/vcList'});
-  } else {
-    console.error("Error: 휴가 신청에 실패했습니다.");
-  }
-}
-
-function isWeekend(date) {
-  const dayOfWeek = date.getDay();
-  return dayOfWeek === 0 || dayOfWeek === 6; // 0은 일요일, 6은 토요일
-}
-
-function getWorkdaysBetween(startDate, endDate) {
-  let totalDays = 0;
-  let currentDate = new Date(startDate);
-
-  while (currentDate <= endDate) {
-    if (!isWeekend(currentDate)) {
-      totalDays++;
+    console.log("data ", )
+    if(response.data.value.code == "0000"){
+      alert("휴가 신청 되었습니다.")
+      router.push({path: '/main'})
+    }else{
+      console.log("fail ", response.data.value.code )
+      alert("휴가 신청에 실패했습니다.")
     }
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
 
-  return totalDays;
+  } else {
+    alert("시스템 장애가 발생하였습니다.")
+  }
 }
 
 
 </script>
-
 
 
 <style scoped>

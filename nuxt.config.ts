@@ -9,11 +9,15 @@ export default defineNuxtConfig({
         transpile: ['vuetify'],
     },
     vite: {
+        config: {
+            productionTip: false,
+            devtools: true
+        },
         ssr: {
             noExternal: ["vuetify"],
         },
         define: {
-            'process.env.DEBUG': false,
+            'process.env.DEBUG': true,
         },
         server: {
             proxy: {

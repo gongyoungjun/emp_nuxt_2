@@ -40,7 +40,8 @@
             <template #item="{ item , index}">
               <tr v-if="!model.loading">
                 <td></td>
-                <td>{{ (model.indexPage - 1) * model.indexPerPage + index + 1 }}</td>
+<!--                <td>{{ (model.indexPage - 1) * model.indexPerPage + index + 1 }}</td>-->
+                <td>{{ model.totalList - (model.indexPage - 1) * model.listSize - index }}</td>
                 <td> {{ item.columns.empNo }}</td>
                 <td> {{ item.columns.empNm }}</td>
                 <td> {{ item.columns.time }}</td>
@@ -74,6 +75,7 @@ let model = ref({
   loading: true,
   headers: [{
     sortable: false,
+    align : 'start',
   },
     {title: '순번', key: 'index'},
     {title: '사원번호', key: 'empNo'},

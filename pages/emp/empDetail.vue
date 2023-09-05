@@ -52,7 +52,7 @@
       <!-- 총 휴가 일수 -->
       <div class="form-group">
         <label for="empVctnTtl">총 휴가 일수</label>
-        <input id="empVctnTtl" name="empVctnTtl" v-model="empData.empVctnTtl" placeholder="총 휴가 일수" disabled />
+        <input id="empVctnTtl" name="empVctnTtl" v-model="empData.empVctnTtl" placeholder="총 휴가 일수"  />
       </div>
 
       <!-- 수정 버튼 -->
